@@ -1,0 +1,2134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Matter of Reputation — Community Intelligence Hub</title>
+  <style>
+    /* ─── RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0a0a0a;
+      --white:   #f5f0e8;
+      --yellow:  #ffe600;
+      --pink:    #ff3cac;
+      --blue:    #00d4ff;
+      --green:   #00ff88;
+      --orange:  #ff6b00;
+      --purple:  #8b00ff;
+      --border:  3px solid #0a0a0a;
+      --shadow:  5px 5px 0 #0a0a0a;
+      --shadow-lg: 8px 8px 0 #0a0a0a;
+      --font-head: 'Courier New', Courier, monospace;
+      --font-body: 'Arial Black', Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--white);
+      color: var(--black);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: var(--white); border-left: 2px solid var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--black); }
+
+    /* ─── MARQUEE BANNER ─── */
+    .marquee-bar {
+      background: var(--yellow);
+      border-top: var(--border);
+      border-bottom: var(--border);
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .marquee-inner {
+      display: inline-block;
+      animation: marquee 30s linear infinite;
+      font-weight: 900;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .marquee-inner span { margin: 0 40px; }
+    @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+
+    /* ─── NAV ─── */
+    nav {
+      background: var(--black);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: var(--border);
+      position: sticky;
+      top: 41px;
+      z-index: 999;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 56px;
+    }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--yellow);
+      text-decoration: none;
+      letter-spacing: -1px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding: 8px 0;
+    }
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 12px;
+      border: 2px solid transparent;
+      transition: all 0.1s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      background: var(--yellow);
+      color: var(--black);
+      border-color: var(--yellow);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: var(--black);
+      color: var(--white);
+      padding: 60px 40px 50px;
+      border-bottom: var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .hero-left h1 {
+      font-family: var(--font-head);
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: 1;
+      font-weight: 900;
+      color: var(--yellow);
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+    }
+    .hero-left p {
+      font-size: 14px;
+      color: #ccc;
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .stat-box {
+      border: 2px solid var(--yellow);
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-box .num {
+      font-family: var(--font-head);
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--yellow);
+      display: block;
+    }
+    .stat-box .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #aaa;
+    }
+    .hero-right {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .hero-tag {
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 900;
+      font-size: 12px;
+      padding: 12px 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+    }
+    .hero-tag.pink { background: var(--pink); color: var(--white); }
+    .hero-tag.blue { background: var(--blue); color: var(--black); }
+    .hero-tag.green { background: var(--green); color: var(--black); }
+    .hero-tag.orange { background: var(--orange); color: var(--white); }
+
+    /* ─── SECTION WRAPPER ─── */
+    .section {
+      padding: 48px 32px;
+      border-bottom: var(--border);
+    }
+    .section:nth-child(even) { background: #f0ebe0; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .section-label {
+      background: var(--black);
+      color: var(--yellow);
+      font-family: var(--font-head);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      padding: 6px 14px;
+      border: 2px solid var(--black);
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(24px, 4vw, 42px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+    .section-count {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 900;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ─── FILTER TABS ─── */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .filter-btn {
+      background: var(--white);
+      color: var(--black);
+      border: var(--border);
+      padding: 7px 16px;
+      font-weight: 900;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--black);
+      transition: all 0.1s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--black);
+      color: var(--yellow);
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--black);
+    }
+    .filter-btn.active { background: var(--yellow); color: var(--black); }
+
+    /* ─── CARD GRID ─── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card-grid.wide { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); }
+    .card-grid.triple { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      transition: all 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: var(--shadow-lg);
+    }
+    .card-accent {
+      height: 6px;
+      background: var(--yellow);
+    }
+    .card-accent.pink { background: var(--pink); }
+    .card-accent.blue { background: var(--blue); }
+    .card-accent.green { background: var(--green); }
+    .card-accent.orange { background: var(--orange); }
+    .card-accent.purple { background: var(--purple); }
+
+    .card-body { padding: 20px; }
+    .card-tag {
+      display: inline-block;
+      background: var(--black);
+      color: var(--white);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 3px 8px;
+      margin-bottom: 10px;
+    }
+    .card-tag.yellow { background: var(--yellow); color: var(--black); }
+    .card-tag.pink { background: var(--pink); }
+    .card-tag.blue { background: var(--blue); color: var(--black); }
+    .card-tag.green { background: var(--green); color: var(--black); }
+    .card-tag.orange { background: var(--orange); }
+    .card-tag.purple { background: var(--purple); }
+
+    .card-title {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .card-desc {
+      font-size: 12px;
+      color: #444;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .card-meta {
+      font-size: 10px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-top: 2px solid var(--black);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+    .card-meta b { color: var(--black); }
+    .card-link {
+      display: inline-block;
+      margin-top: 10px;
+      background: var(--black);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      text-decoration: none;
+      border: 2px solid var(--black);
+      transition: all 0.1s;
+    }
+    .card-link:hover {
+      background: var(--yellow);
+      color: var(--black);
+    }
+    .card-link.outline {
+      background: transparent;
+      color: var(--black);
+    }
+    .card-link.outline:hover {
+      background: var(--black);
+      color: var(--yellow);
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .pill {
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border: 2px solid var(--black);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #f5f0e8;
+    }
+
+    /* ─── ALERT CARD ─── */
+    .alert-card {
+      background: var(--black);
+      color: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow-lg);
+      padding: 24px;
+      position: relative;
+    }
+    .alert-card::before {
+      content: '!!';
+      position: absolute;
+      top: -14px;
+      right: 20px;
+      font-size: 14px;
+      font-weight: 900;
+      font-family: var(--font-head);
+      background: var(--orange);
+      border: var(--border);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0;
+    }
+    .alert-card h3 {
+      font-family: var(--font-head);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+    .alert-card p { font-size: 12px; color: #ccc; line-height: 1.6; }
+
+    /* ─── EVENT CARD ─── */
+    .event-card {
+      border: var(--border);
+      box-shadow: var(--shadow);
+      transition: all 0.15s;
+      background: var(--white);
+      display: grid;
+      grid-template-columns: 90px 1fr;
+    }
+    .event-card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: var(--shadow-lg);
+    }
+    .event-date {
+      background: var(--black);
+      color: var(--yellow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-weight: 900;
+      padding: 16px 8px;
+      text-align: center;
+    }
+    .event-date .day { font-size: 30px; line-height: 1; }
+    .event-date .month { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #aaa; margin-top: 2px; }
+    .event-date .year { font-size: 10px; color: #666; }
+    .event-body { padding: 16px; }
+    .event-body h3 {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .event-body p { font-size: 11px; color: #555; line-height: 1.5; margin-bottom: 8px; }
+    .event-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+    .event-pill {
+      font-size: 9px;
+      font-weight: 900;
+      padding: 2px 7px;
+      border: 2px solid var(--black);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .event-pill.free { background: var(--green); color: var(--black); }
+    .event-pill.paid { background: var(--orange); color: var(--white); }
+    .event-pill.online { background: var(--blue); color: var(--black); }
+    .event-pill.offline { background: var(--purple); color: var(--white); }
+
+    /* ─── JOB CARD ─── */
+    .job-card {
+      border: var(--border);
+      box-shadow: var(--shadow);
+      background: var(--white);
+      padding: 20px;
+      transition: all 0.15s;
+    }
+    .job-card:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: var(--shadow-lg);
+    }
+    .job-type {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 3px 8px;
+      border: 2px solid var(--black);
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .job-type.internship { background: var(--blue); color: var(--black); }
+    .job-type.fulltime { background: var(--green); color: var(--black); }
+    .job-type.freelance { background: var(--yellow); color: var(--black); }
+    .job-type.equity { background: var(--purple); color: var(--white); }
+    .job-type.volunteer { background: #eee; color: var(--black); }
+    .job-card h3 {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .job-card .company { font-size: 11px; font-weight: 900; color: #555; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .job-card .desc { font-size: 11px; color: #444; line-height: 1.6; margin-bottom: 10px; }
+    .job-card .meta { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px; border-top: 2px dashed #ccc; padding-top: 8px; }
+
+    /* ─── FEATURED STRIP ─── */
+    .featured-strip {
+      background: var(--yellow);
+      border: var(--border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+      flex-wrap: wrap;
+    }
+    .featured-strip .label {
+      background: var(--black);
+      color: var(--yellow);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      padding: 5px 12px;
+      white-space: nowrap;
+    }
+    .featured-strip p { font-size: 13px; font-weight: 900; flex: 1; }
+    .featured-strip a {
+      background: var(--black);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 8px 18px;
+      text-decoration: none;
+      border: 2px solid var(--black);
+      white-space: nowrap;
+    }
+    .featured-strip a:hover { background: var(--white); color: var(--black); }
+
+    /* ─── PROMO GRID ─── */
+    .promo-card {
+      background: var(--black);
+      color: var(--white);
+      border: var(--border);
+      box-shadow: var(--shadow-lg);
+      padding: 24px;
+      transition: all 0.15s;
+    }
+    .promo-card:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 12px 12px 0 var(--black);
+    }
+    .promo-code {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 900;
+      padding: 8px 18px;
+      border: 2px solid var(--yellow);
+      letter-spacing: 2px;
+      margin: 10px 0;
+    }
+    .promo-card h3 {
+      font-family: var(--font-head);
+      font-size: 16px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 6px;
+    }
+    .promo-card p { font-size: 12px; color: #ccc; line-height: 1.6; }
+
+    /* ─── MODEL TABLE ─── */
+    .model-table-wrap {
+      overflow-x: auto;
+      border: var(--border);
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 24px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+      font-size: 12px;
+    }
+    thead { background: var(--black); color: var(--white); }
+    thead th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 900;
+      border-right: 2px solid #333;
+    }
+    thead th:last-child { border-right: none; }
+    tbody tr { border-bottom: 2px solid var(--black); }
+    tbody tr:nth-child(even) { background: #f0ebe0; }
+    tbody tr:hover { background: var(--yellow); }
+    tbody td {
+      padding: 11px 16px;
+      vertical-align: middle;
+      border-right: 2px solid #ddd;
+    }
+    tbody td:last-child { border-right: none; }
+    .badge {
+      font-size: 9px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border: 2px solid var(--black);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .badge.oss { background: var(--green); color: var(--black); }
+    .badge.api { background: var(--blue); color: var(--black); }
+    .badge.free { background: var(--yellow); color: var(--black); }
+    .badge.paid { background: var(--pink); color: var(--white); }
+    .badge.new { background: var(--orange); color: var(--white); }
+
+    /* ─── SECURITY SECTION ─── */
+    .security-section {
+      background: #0a0a0a;
+      color: var(--white);
+      border: 4px solid var(--orange);
+      box-shadow: 8px 8px 0 var(--orange);
+      padding: 32px;
+      margin: 0 0 24px;
+    }
+    .security-section .sec-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .sec-icon {
+      background: var(--orange);
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      border: 2px solid var(--orange);
+    }
+    .sec-title {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+    .sec-alerts { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .sec-alert {
+      background: #1a1a1a;
+      border: 2px solid var(--orange);
+      padding: 18px;
+    }
+    .sec-alert h4 {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .sec-alert p { font-size: 11px; color: #bbb; line-height: 1.6; }
+
+    /* ─── STARTUP CATEGORY ─── */
+    .cat-header {
+      background: var(--black);
+      color: var(--yellow);
+      font-family: var(--font-head);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      padding: 8px 16px;
+      border: var(--border);
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--black);
+      color: var(--white);
+      padding: 40px 32px;
+      border-top: 4px solid var(--yellow);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .footer-logo {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--yellow);
+      margin-bottom: 12px;
+    }
+    .footer-desc { font-size: 12px; color: #888; line-height: 1.7; }
+    footer h4 {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #555;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #222;
+    }
+    footer ul { list-style: none; }
+    footer ul li { margin-bottom: 6px; }
+    footer ul li a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    footer ul li a:hover { color: var(--yellow); }
+    .footer-bottom {
+      border-top: 2px solid #222;
+      padding-top: 20px;
+      font-size: 10px;
+      color: #555;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .footer-bottom b { color: var(--yellow); }
+
+    /* ─── BACK TO TOP ─── */
+    .btt {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--yellow);
+      color: var(--black);
+      border: var(--border);
+      box-shadow: var(--shadow);
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      font-weight: 900;
+      text-decoration: none;
+      z-index: 500;
+      transition: all 0.1s;
+    }
+    .btt:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow-lg); }
+
+    /* ─── UTILITY ─── */
+    .divider {
+      border: none;
+      border-top: 3px dashed #ccc;
+      margin: 24px 0;
+    }
+    .highlight { background: var(--yellow); padding: 1px 4px; }
+    .text-mono { font-family: var(--font-head); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; padding: 32px 20px; }
+      .hero-right { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .section { padding: 32px 16px; }
+      nav { top: 0; }
+      .marquee-bar { display: none; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── SMOOTH REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <span class="marquee-inner">
+    <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:5px"><rect x="2" y="4" width="10" height="7" rx="0" stroke="#0a0a0a" stroke-width="1.5" fill="none"/><rect x="4" y="6" width="2" height="2" fill="#0a0a0a"/><rect x="8" y="6" width="2" height="2" fill="#0a0a0a"/><rect x="5" y="1" width="1.5" height="3" fill="#0a0a0a"/><rect x="7.5" y="1" width="1.5" height="3" fill="#0a0a0a"/><rect x="0" y="6" width="2" height="1.5" fill="#0a0a0a"/><rect x="12" y="6" width="2" height="1.5" fill="#0a0a0a"/><rect x="4" y="9" width="6" height="1.5" fill="#0a0a0a"/></svg> DeepSeek V4 — 1T params, $5.2M training cost</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:5px"><polygon points="7,1 9,6 13,6 10,9 11,13 7,10.5 3,13 4,9 1,6 5,6" stroke="#0a0a0a" stroke-width="1.5" fill="#0a0a0a"/></svg> Claude Opus 4.7 — 87.6% SWE-bench, 1M context</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:5px"><rect x="2" y="0" width="10" height="14" rx="0" fill="#0a0a0a"/><rect x="4" y="2" width="6" height="2" fill="#ffe600"/><rect x="3" y="10" width="8" height="2" fill="#ffe600"/></svg> Hack-Nation Gurugram — $30K cash + $150K credits</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:5px"><rect x="1" y="1" width="12" height="12" stroke="#0a0a0a" stroke-width="1.5" fill="none"/><path d="M4 7h6M7 4v6" stroke="#0a0a0a" stroke-width="2"/></svg> Lovable.dev — Free month with code KEYWORDSUIUC</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:5px"><polygon points="7,1 13,13 1,13" stroke="#0a0a0a" stroke-width="1.5" fill="none"/><rect x="6.25" y="5.5" width="1.5" height="4" fill="#0a0a0a"/><rect x="6.25" y="10.5" width="1.5" height="1.5" fill="#0a0a0a"/></svg> SECURITY: Axios RAT, Chrome Critical Update — Act Now</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:5px"><path d="M2 11 L7 1 L12 11" stroke="#0a0a0a" stroke-width="1.5" fill="none"/><rect x="3" y="11" width="8" height="2" fill="#0a0a0a"/><rect x="4.5" y="8" width="5" height="1.5" fill="#0a0a0a"/></svg> Code Nakshatra 2.0 — Rs.5L+ prize, May 7-8</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:5px"><rect x="1" y="5" width="12" height="1.5" fill="#0a0a0a"/><polygon points="3,5 7,1 11,5" fill="#0a0a0a"/><rect x="4" y="6.5" width="1.5" height="5" fill="#0a0a0a"/><rect x="8.5" y="6.5" width="1.5" height="5" fill="#0a0a0a"/><rect x="2" y="11.5" width="10" height="1.5" fill="#0a0a0a"/></svg> Microsoft Azure Students — $100 free cloud credits</span>
+    <span><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="7" cy="5" r="3.5" stroke="#0a0a0a" stroke-width="1.5" fill="none"/><rect x="6.25" y="8" width="1.5" height="4" fill="#0a0a0a"/><rect x="4.5" y="2.5" width="5" height="1" fill="#0a0a0a"/></svg> MCP crossed 97M installs</span>
+  </span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">// REPUTATION.INTEL</a>
+  <div class="nav-links">
+    <a href="#models" class="active">AI Models</a>
+    <a href="#tools">Tools</a>
+    <a href="#startups">Startups</a>
+    <a href="#jobs">Jobs</a>
+    <a href="#events">Events</a>
+    <a href="#learn">Learn</a>
+    <a href="#promos">Promos</a>
+    <a href="#security">Security</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <h1>Community<br>Intelligence<br>Hub</h1>
+    <p>Curated AI models, tools, startups, jobs, events & resources extracted from India's most active AI & startup communities.</p>
+    <div class="hero-stats">
+      <div class="stat-box"><span class="num">14+</span><span class="label">AI Models</span></div>
+      <div class="stat-box"><span class="num">50+</span><span class="label">Startups</span></div>
+      <div class="stat-box"><span class="num">30+</span><span class="label">Job Opps</span></div>
+      <div class="stat-box"><span class="num">10+</span><span class="label">Events</span></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-tag">AI Models &amp; Releases</div>
+    <div class="hero-tag pink">Startup Launches</div>
+    <div class="hero-tag blue">Hackathons &amp; Events</div>
+    <div class="hero-tag green">Learning Resources</div>
+    <div class="hero-tag orange">Security Alerts</div>
+    <div class="hero-tag" style="background:#8b00ff;color:#fff;">Promo Codes</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: AI MODELS                          -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="models">
+  <div class="section-header">
+    <span class="section-label">01</span>
+    <h2 class="section-title">AI Models & Releases</h2>
+    <span class="section-count">14 entries</span>
+  </div>
+
+  <!-- Model Comparison Table -->
+  <div class="model-table-wrap reveal">
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Publisher</th>
+          <th>Context</th>
+          <th>Key Stat</th>
+          <th>Pricing</th>
+          <th>License</th>
+          <th>Access</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Claude Opus 4.7</b></td>
+          <td>Anthropic</td>
+          <td>1M tokens</td>
+          <td>87.6% SWE-bench · 94.2% GPQA</td>
+          <td>$5 in / $25 out /M</td>
+          <td><span class="badge paid">Proprietary</span></td>
+          <td><span class="badge api">API</span></td>
+        </tr>
+        <tr>
+          <td><b>Claude Sonnet 4.6</b></td>
+          <td>Anthropic</td>
+          <td>—</td>
+          <td>Mid-tier flagship</td>
+          <td>Lower than Opus</td>
+          <td><span class="badge paid">Proprietary</span></td>
+          <td><span class="badge api">API</span></td>
+        </tr>
+        <tr>
+          <td><b>DeepSeek V4</b></td>
+          <td>DeepSeek</td>
+          <td>1M tokens</td>
+          <td>94.7% HumanEval · 1T MoE params</td>
+          <td>$0.30/M tokens</td>
+          <td><span class="badge oss">Apache 2.0</span></td>
+          <td><span class="badge api">API</span></td>
+        </tr>
+        <tr>
+          <td><b>Google Gemma 4</b></td>
+          <td>Google</td>
+          <td>—</td>
+          <td>400M+ HF downloads</td>
+          <td>Free (local)</td>
+          <td><span class="badge oss">Apache 2.0</span></td>
+          <td><span class="badge free">HuggingFace</span></td>
+        </tr>
+        <tr>
+          <td><b>GPT-5.4</b></td>
+          <td>OpenAI</td>
+          <td>1M tokens</td>
+          <td>Native computer-use</td>
+          <td>—</td>
+          <td><span class="badge paid">Proprietary</span></td>
+          <td><span class="badge api">API</span></td>
+        </tr>
+        <tr>
+          <td><b>GPT-5.3 Instant</b></td>
+          <td>OpenAI</td>
+          <td>—</td>
+          <td>Fast/low-latency</td>
+          <td>Low cost</td>
+          <td><span class="badge paid">Proprietary</span></td>
+          <td><span class="badge api">API</span></td>
+        </tr>
+        <tr>
+          <td><b>Qwen3.6-Plus</b></td>
+          <td>Alibaba</td>
+          <td>1M tokens</td>
+          <td>Agentic · Multimodal</td>
+          <td>Free on OpenRouter</td>
+          <td><span class="badge oss">Open</span></td>
+          <td><span class="badge free">OpenRouter</span></td>
+        </tr>
+        <tr>
+          <td><b>Qwen3.5-Medium</b></td>
+          <td>Alibaba</td>
+          <td>—</td>
+          <td>Local deployment balanced</td>
+          <td>Free</td>
+          <td><span class="badge oss">Open</span></td>
+          <td><span class="badge free">HuggingFace</span></td>
+        </tr>
+        <tr>
+          <td><b>GLM-5V-Turbo</b></td>
+          <td>Zhipu AI</td>
+          <td>200K tokens</td>
+          <td>Vision-to-code · Claude compatible</td>
+          <td>Free</td>
+          <td><span class="badge free">Free</span></td>
+          <td><span class="badge api">OpenRouter</span></td>
+        </tr>
+        <tr>
+          <td><b>Grok 4.20</b></td>
+          <td>xAI</td>
+          <td>—</td>
+          <td>~78% non-hallucination rate</td>
+          <td>Low cost</td>
+          <td><span class="badge paid">Proprietary</span></td>
+          <td><span class="badge api">xAI API</span></td>
+        </tr>
+        <tr>
+          <td><b>Netflix VOID</b></td>
+          <td>Netflix</td>
+          <td>—</td>
+          <td>Video object deletion</td>
+          <td>Free</td>
+          <td><span class="badge oss">Open</span></td>
+          <td><span class="badge free">HuggingFace</span></td>
+        </tr>
+        <tr>
+          <td><b>MAI-Transcribe-1</b></td>
+          <td>Microsoft</td>
+          <td>—</td>
+          <td>2.5× faster than Whisper</td>
+          <td>Azure</td>
+          <td><span class="badge paid">Proprietary</span></td>
+          <td><span class="badge api">Azure AI</span></td>
+        </tr>
+        <tr>
+          <td><b>MAI-Voice-1</b></td>
+          <td>Microsoft</td>
+          <td>—</td>
+          <td>Voice clone from seconds of audio</td>
+          <td>Azure</td>
+          <td><span class="badge paid">Proprietary</span></td>
+          <td><span class="badge api">Azure AI</span></td>
+        </tr>
+        <tr>
+          <td><b>Gemini Embedding 2</b></td>
+          <td>Google</td>
+          <td>—</td>
+          <td>Multimodal (text+image+audio+video+PDF)</td>
+          <td>Gemini API</td>
+          <td><span class="badge paid">Proprietary</span></td>
+          <td><span class="badge api">Vertex AI</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Highlight cards for top 4 -->
+  <div class="card-grid reveal">
+
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <span class="card-tag yellow">Open Source</span>
+        <div class="card-title">DeepSeek V4</div>
+        <div class="card-desc">1-trillion-parameter MoE model trained for just $5.2M. Achieves 94.7% HumanEval with 1M context window and a built-in "Engram" long-term memory system.</div>
+        <div class="pill-row">
+          <span class="pill">1T Params</span>
+          <span class="pill">94.7% HumanEval</span>
+          <span class="pill">$0.30/M tokens</span>
+          <span class="pill">Apache 2.0</span>
+        </div>
+        <div class="card-meta"><b>Access:</b> deepseek.com / API</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">Anthropic</span>
+        <div class="card-title">Claude Opus 4.7</div>
+        <div class="card-desc">Anthropic's flagship with background task execution. Top of SWE-bench at 87.6% and GPQA Diamond at 94.2%. 1M context window built for serious agentic dev work.</div>
+        <div class="pill-row">
+          <span class="pill">87.6% SWE-bench</span>
+          <span class="pill">94.2% GPQA</span>
+          <span class="pill">1M Context</span>
+        </div>
+        <div class="card-meta"><b>Pricing:</b> $5 input / $25 output per million tokens</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent orange"></div>
+      <div class="card-body">
+        <span class="card-tag orange">OpenAI</span>
+        <div class="card-title">GPT-5.4</div>
+        <div class="card-desc">Frontier model with native computer-use — can operate apps and websites autonomously. Competes directly with Opus and Gemini at the top tier. Variants: Thinking &amp; Pro.</div>
+        <div class="pill-row">
+          <span class="pill">Computer Use</span>
+          <span class="pill">1M Context</span>
+          <span class="pill">GPT-5.4 Thinking</span>
+          <span class="pill">GPT-5.4 Pro</span>
+        </div>
+        <div class="card-meta"><b>Access:</b> ChatGPT + OpenAI API</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Free</span>
+        <div class="card-title">GLM-5V-Turbo</div>
+        <div class="card-desc">10B vision-language model from Zhipu AI with 200K context. Completely free, vision-to-code capable, and notably compatible with Claude Code workflows.</div>
+        <div class="pill-row">
+          <span class="pill">10B Params</span>
+          <span class="pill">200K Context</span>
+          <span class="pill">Claude Code Compat</span>
+          <span class="pill">Free</span>
+        </div>
+        <div class="card-meta"><b>Access:</b> zhipuai.cn / OpenRouter</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: AI TOOLS                           -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="tools">
+  <div class="section-header">
+    <span class="section-label">02</span>
+    <h2 class="section-title">AI Tools & Platforms</h2>
+    <span class="section-count">14 tools</span>
+  </div>
+
+  <div class="card-grid triple reveal">
+
+    <div class="card">
+      <div class="card-accent pink"></div>
+      <div class="card-body">
+        <span class="card-tag pink">Multi-Model</span>
+        <div class="card-title">Poe · Arena · TAAFT</div>
+        <div class="card-desc">The trifecta of multi-model AI access: <b>Poe.com</b> for chat, <b>Arena.ai</b> for head-to-head model comparison, and <b>theresanaiforthat.com</b> for discovering AI tools by use case.</div>
+        <div class="pill-row">
+          <span class="pill">GPT-4</span><span class="pill">Claude</span><span class="pill">Gemini</span>
+        </div>
+        <a href="https://poe.com" class="card-link" target="_blank">Poe.com →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <span class="card-tag">Dev Tool</span>
+        <div class="card-title">e2b.dev Sandbox</div>
+        <div class="card-desc">Open-source AI agent sandbox providing full desktop/cloud environments. 100 concurrent sandboxes on pro, 24-hour sessions. Used to build cheap N8N hosting at $2–5/month/user.</div>
+        <div class="pill-row"><span class="pill">Open Source</span><span class="pill">Self-host</span><span class="pill">AI Agents</span></div>
+        <a href="https://e2b.dev/docs" class="card-link" target="_blank">Docs →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">Open Source</span>
+        <div class="card-title">Mozilla Thunderbolt</div>
+        <div class="card-desc">Self-hosted open-source AI client that connects to Claude, OpenAI Codex, DeepSeek, and more. Privacy-friendly alternative to cloud-only interfaces.</div>
+        <div class="pill-row"><span class="pill">Local</span><span class="pill">Multi-Provider</span><span class="pill">Private</span></div>
+        <div class="card-meta"><b>Access:</b> GitHub (Mozilla org)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent orange"></div>
+      <div class="card-body">
+        <span class="card-tag orange">Video AI</span>
+        <div class="card-title">Meta Vibes AI Editor</div>
+        <div class="card-desc">Full web-based video creation studio with timeline editing, AI-generated media, lip-syncing, and multi-track workflows. Rivals Sora in scope. Soft launch / early testing.</div>
+        <div class="pill-row"><span class="pill">Lip Sync</span><span class="pill">Timeline</span><span class="pill">AI Media Gen</span></div>
+        <div class="card-meta"><b>Publisher:</b> Meta &nbsp;|&nbsp; <b>Status:</b> Early Testing</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Free + Paid</span>
+        <div class="card-title">Voidai.app</div>
+        <div class="card-desc">All-in-one AI API platform for image, video, text, and audio generation. Great for rapid prototyping across all modalities from a single interface.</div>
+        <div class="pill-row"><span class="pill">Image</span><span class="pill">Video</span><span class="pill">Audio</span><span class="pill">Text</span></div>
+        <a href="https://voidai.app" class="card-link" target="_blank">Visit →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent yellow"></div>
+      <div class="card-body">
+        <span class="card-tag yellow">No Code</span>
+        <div class="card-title">Emergent</div>
+        <div class="card-desc">Free credits for building AI apps with a no-code/low-code interface. Perfect for spinning up quick MVPs without heavy infrastructure setup.</div>
+        <div class="pill-row"><span class="pill">Free Credits</span><span class="pill">No-Code</span><span class="pill">MVP</span></div>
+        <a href="https://app.emergent.sh" class="card-link" target="_blank">app.emergent.sh →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <span class="card-tag">Tiny ML</span>
+        <div class="card-title">Arduino + Edge Impulse</div>
+        <div class="card-desc">TinyML stack for running machine learning directly on low-power Arduino hardware. Ideal for embedded AI, IoT builders, and on-device inference projects.</div>
+        <div class="pill-row"><span class="pill">Embedded AI</span><span class="pill">IoT</span><span class="pill">On-Device</span></div>
+        <a href="https://edgeimpulse.com" class="card-link" target="_blank">edgeimpulse.com →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent pink"></div>
+      <div class="card-body">
+        <span class="card-tag pink">Dev Tool</span>
+        <div class="card-title">Claudeoo</div>
+        <div class="card-desc">Intercepts Claude Code's live SSE stream to give accurate per-session token usage and cost tracking — solves Claude Code's known output token undercounting issue.</div>
+        <div class="pill-row"><span class="pill">Claude Code</span><span class="pill">Cost Tracking</span><span class="pill">SSE Stream</span></div>
+        <div class="card-meta"><b>Contact:</b> Lucknow AI Labs community</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">Privacy</span>
+        <div class="card-title">Firefox 148</div>
+        <div class="card-desc">Introduces an AI kill switch allowing users to selectively disable AI-powered website integrations. Key for privacy-focused developers testing AI-free fallback UX.</div>
+        <div class="pill-row"><span class="pill">Privacy Control</span><span class="pill">AI Kill Switch</span></div>
+        <div class="card-meta"><b>Access:</b> Firefox browser update</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Showcase</span>
+        <div class="card-title">Vibe Coders Gallery</div>
+        <div class="card-desc">Curated gallery of vibe-coded (AI-assisted) projects for inspiration and showcasing your own AI-assisted builds to the community.</div>
+        <div class="pill-row"><span class="pill">Portfolio</span><span class="pill">Inspiration</span><span class="pill">AI Builds</span></div>
+        <a href="https://vibecodersgallery.app" class="card-link" target="_blank">vibecodersgallery.app →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent orange"></div>
+      <div class="card-body">
+        <span class="card-tag orange">Open Source</span>
+        <div class="card-title">AirLLM</div>
+        <div class="card-desc">Lightweight Python library for running large LLMs on minimal hardware. Ideal for local AI deployment on constrained or budget devices.</div>
+        <div class="pill-row"><span class="pill">Python</span><span class="pill">Low-VRAM</span><span class="pill">Local LLM</span></div>
+        <a href="https://github.com/lyogavin/airllm" class="card-link" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <span class="card-tag">XibeAI</span>
+        <div class="card-title">XibeAI CLI Tool</div>
+        <div class="card-desc">Open-source CLI AI coding tool built by a B.Tech 2nd year ECE student — aiming to compete with Claude Code. Pre-1.0, actively developed, contributions welcome.</div>
+        <div class="pill-row"><span class="pill">CLI</span><span class="pill">Open Source</span><span class="pill">Pre-1.0</span></div>
+        <a href="https://github.com/iotserver24/Xibecode" class="card-link" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: STARTUPS                           -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="startups">
+  <div class="section-header">
+    <span class="section-label">03</span>
+    <h2 class="section-title">Startup Launches</h2>
+    <span class="section-count">30+ startups</span>
+  </div>
+
+  <!-- AI & Dev Tools -->
+  <div class="cat-header">AI &amp; Developer Tools</div>
+  <div class="card-grid triple reveal" style="margin-bottom:32px">
+
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <span class="card-tag">Dev Tools</span>
+        <div class="card-title">NeuraPrime X</div>
+        <div class="card-desc">Ambitious local-first agentic AI OS — 100+ modules across 6 phases. Controls the computer, manages files, codes, learns, smart home/IoT integration. Built by B.Tech 1st year CSE student.</div>
+        <div class="pill-row"><span class="pill">Linux</span><span class="pill">Local AI</span><span class="pill">IoT</span><span class="pill">6-Phase Roadmap</span></div>
+        <div class="card-meta"><b>Stage:</b> Conceptual / Planning</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent pink"></div>
+      <div class="card-body">
+        <span class="card-tag pink">Chrome Ext</span>
+        <div class="card-title">Prompt Helio</div>
+        <div class="card-desc">Chrome extension that injects custom UI gradients into ChatGPT, adds note-taking, saves prompts, and enables public image prompt libraries. Live on Chrome Web Store.</div>
+        <div class="pill-row"><span class="pill">ChatGPT UI</span><span class="pill">Prompt Library</span><span class="pill">Live</span></div>
+        <a href="https://chromewebstore.google.com/detail/oibbdhbgkfhpkmpagbielcciopcjpmlf" class="card-link" target="_blank">Chrome Store →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">BaaS</span>
+        <div class="card-title">VOID-X</div>
+        <div class="card-desc">Backend-as-a-Service platform by THEXSTUDIO for developers needing managed backend infrastructure without building from scratch. Early stage, seeking developer feedback.</div>
+        <div class="pill-row"><span class="pill">BaaS</span><span class="pill">Infrastructure</span><span class="pill">Early Stage</span></div>
+        <div class="card-meta"><b>Team:</b> THEXSTUDIO</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Free</span>
+        <div class="card-title">DevCloudDesk</div>
+        <div class="card-desc">Free cloud-based desktop workspace for developers. Fully live at a dedicated domain — no setup required to get a working cloud dev environment.</div>
+        <div class="pill-row"><span class="pill">Cloud IDE</span><span class="pill">Free</span><span class="pill">Live</span></div>
+        <a href="https://devclouddesk.com" class="card-link" target="_blank">devclouddesk.com →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent orange"></div>
+      <div class="card-body">
+        <span class="card-tag orange">Awadhi NLP</span>
+        <div class="card-title">Awadhi Language Project</div>
+        <div class="card-desc">Open-source initiative to build a speech AI model for the Awadhi language. Currently collecting voice recordings from native speakers to build NLP infrastructure for an underrepresented Indian language.</div>
+        <div class="pill-row"><span class="pill">Open Source</span><span class="pill">Speech AI</span><span class="pill">NLP</span></div>
+        <a href="https://github.com/monk1337/awadhi_language" class="card-link" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- EdTech -->
+  <div class="cat-header">EdTech &amp; Learning</div>
+  <div class="card-grid triple reveal" style="margin-bottom:32px">
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">EdTech</span>
+        <div class="card-title">Aidube</div>
+        <div class="card-desc">Free AI-powered platform that converts YouTube videos and articles into structured interactive courses with PDF notes, quizzes, roadmaps, and a Focus Mode. Built by Ainaan Raza.</div>
+        <div class="pill-row"><span class="pill">Free</span><span class="pill">YouTube → Course</span><span class="pill">AI Notes</span><span class="pill">MCQ Quiz</span></div>
+        <a href="https://aidube.com" class="card-link" target="_blank">aidube.com →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent pink"></div>
+      <div class="card-body">
+        <span class="card-tag pink">MedTech</span>
+        <div class="card-title">3D Medical Education</div>
+        <div class="card-desc">Interactive 3D human anatomy platform with AI-guided surgical procedure learning for medical students. Built with React + Three.js. At MVP stage — hiring React/Three.js dev.</div>
+        <div class="pill-row"><span class="pill">3D Anatomy</span><span class="pill">React</span><span class="pill">Three.js</span><span class="pill">MVP</span></div>
+        <div class="card-meta"><b>Hiring:</b> React + Three.js developer</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Incubator</span>
+        <div class="card-title">Pitechpedia</div>
+        <div class="card-desc">Student innovation community and startup incubator by Vasanthkumar SR. Goal: 20+ startups launched by end of 2026. Free internships available across all domains.</div>
+        <div class="pill-row"><span class="pill">Free Internships</span><span class="pill">Student</span><span class="pill">20+ Startups Goal</span></div>
+        <div class="card-meta"><b>Contact:</b> +91 91508 22731</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Fintech -->
+  <div class="cat-header">Fintech &amp; Investment</div>
+  <div class="card-grid triple reveal" style="margin-bottom:32px">
+
+    <div class="card">
+      <div class="card-accent yellow"></div>
+      <div class="card-body">
+        <span class="card-tag yellow">Fintech</span>
+        <div class="card-title">Poolvest</div>
+        <div class="card-desc">Pooled investment platform aggregating smaller investor capital to access curated startup investment opportunities — democratizing startup investing for retail investors.</div>
+        <div class="pill-row"><span class="pill">Pooled Investing</span><span class="pill">Startups</span><span class="pill">Early Stage</span></div>
+        <div class="card-meta"><b>Contact:</b> Shravan, Bangalore</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <span class="card-tag">Matchmaking</span>
+        <div class="card-title">Ryleni</div>
+        <div class="card-desc">Startup-investor matchmaking platform with 300+ startups in ecosystem, 40+ generating meaningful ARR. Serious platform for startup-investor connections in India.</div>
+        <div class="pill-row"><span class="pill">300+ Startups</span><span class="pill">40+ ARR</span><span class="pill">Live</span></div>
+        <a href="https://ryleni.com" class="card-link" target="_blank">ryleni.com →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent orange"></div>
+      <div class="card-body">
+        <span class="card-tag orange">Stealth</span>
+        <div class="card-title">Fraud Detection API</div>
+        <div class="card-desc">Real-time fraud detection and secure transaction API built for fintechs and neobanks. Testing phase — seeking serious builder and fintech teams to validate.</div>
+        <div class="pill-row"><span class="pill">Real-time</span><span class="pill">API</span><span class="pill">Neobanks</span><span class="pill">Testing</span></div>
+        <div class="card-meta"><b>Contact:</b> +91 84287 44136</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- B2B SaaS -->
+  <div class="cat-header">B2B SaaS &amp; Productivity</div>
+  <div class="card-grid triple reveal" style="margin-bottom:32px">
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Healthcare</span>
+        <div class="card-title">MediFlow</div>
+        <div class="card-desc">Growth and retention SaaS for medical/pharmacy stores with WhatsApp/SMS refill reminders, customer profiles, and dashboards. MVP tested with 4 real stores.</div>
+        <div class="pill-row"><span class="pill">MVP Live</span><span class="pill">WhatsApp</span><span class="pill">Subscription</span></div>
+        <div class="card-meta"><b>Stage:</b> 4 pilot stores in testing</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent pink"></div>
+      <div class="card-body">
+        <span class="card-tag pink">Freelancer</span>
+        <div class="card-title">my-onboardly</div>
+        <div class="card-desc">Client onboarding tool for freelance designers and developers that solves scope creep by capturing complete requirements upfront before any work begins.</div>
+        <div class="pill-row"><span class="pill">Freelancers</span><span class="pill">Onboarding</span><span class="pill">Anti-Scope-Creep</span></div>
+        <a href="https://my-onboardly.vercel.app" class="card-link" target="_blank">Demo →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">Creator Tools</span>
+        <div class="card-title">AutoChats</div>
+        <div class="card-desc">Instagram DM automation tool for creators. Free MVP live at autochats.ragx.in — the founder is actively seeking feedback from creators and indie hackers.</div>
+        <div class="pill-row"><span class="pill">Instagram DMs</span><span class="pill">Automation</span><span class="pill">Free MVP</span></div>
+        <a href="https://autochats.ragx.in" class="card-link" target="_blank">Try it →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <span class="card-tag">Cybersecurity</span>
+        <div class="card-title">TrustLayerLabs</div>
+        <div class="card-desc">Cybersecurity startup specializing in VAPT — Vulnerability Assessment and Penetration Testing. Seeking enterprise clients. Live at trustlayerlabs.co.in.</div>
+        <div class="pill-row"><span class="pill">VAPT</span><span class="pill">Enterprise</span><span class="pill">Live</span></div>
+        <a href="https://trustlayerlabs.co.in" class="card-link" target="_blank">trustlayerlabs.co.in →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent yellow"></div>
+      <div class="card-body">
+        <span class="card-tag yellow">Restaurant</span>
+        <div class="card-title">ZepMenu</div>
+        <div class="card-desc">QR code-based digital menu SaaS for restaurants and cafes. Product is live — currently for sale. Could be an acquisition opportunity for restaurant tech buyers.</div>
+        <div class="pill-row"><span class="pill">QR Menu</span><span class="pill">Restaurants</span><span class="pill">For Sale</span></div>
+        <div class="card-meta"><b>Contact:</b> +91 80087 67212</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent orange"></div>
+      <div class="card-body">
+        <span class="card-tag orange">Young Founder</span>
+        <div class="card-title">ProXPL</div>
+        <div class="card-desc">Built by 16-year-old founder Kanishk Raj — live at proxpl.in and actively seeking early users. A notable young-founder story from the SaaS &amp; Startup community.</div>
+        <div class="pill-row"><span class="pill">Age 16</span><span class="pill">Live</span><span class="pill">Seeking Users</span></div>
+        <a href="https://proxpl.in" class="card-link" target="_blank">proxpl.in →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Social & Consumer -->
+  <div class="cat-header">Social &amp; Consumer Apps</div>
+  <div class="card-grid triple reveal">
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">Social</span>
+        <div class="card-title">HiveMate</div>
+        <div class="card-desc">Proximity-based real-time networking by AlertCode. Radar-style person discovery with E2E encrypted messaging, voice/video calls, and a gamified HiveCoin reward system.</div>
+        <div class="pill-row"><span class="pill">Radar Discovery</span><span class="pill">E2E Encrypted</span><span class="pill">HiveCoins</span><span class="pill">Live</span></div>
+        <a href="https://hivemate.in" class="card-link" target="_blank">hivemate.in →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Creator Economy</span>
+        <div class="card-title">Flic</div>
+        <div class="card-desc">Platform for financially investing in your favorite YouTube creators — merges fandom with equity or revenue-share models. Early stage seeking feedback and users.</div>
+        <div class="pill-row"><span class="pill">Creator Invest</span><span class="pill">Revenue Share</span><span class="pill">Early</span></div>
+        <a href="https://flicfsc.vercel.app" class="card-link" target="_blank">Try Flic →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent pink"></div>
+      <div class="card-body">
+        <span class="card-tag pink">UGC</span>
+        <div class="card-title">VEXL</div>
+        <div class="card-desc">UGC marketplace connecting brands directly with creators for reels, demos, and ad creatives — cutting out agencies. Pre-launch, seeking brand and creator feedback.</div>
+        <div class="pill-row"><span class="pill">Brand-Creator</span><span class="pill">Short-Form</span><span class="pill">Pre-Launch</span></div>
+        <div class="card-meta"><b>Contact:</b> +91 83277 16294</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: JOBS                               -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="jobs">
+  <div class="section-header">
+    <span class="section-label">04</span>
+    <h2 class="section-title">Job Opportunities</h2>
+    <span class="section-count">30+ roles</span>
+  </div>
+
+  <div class="filter-row" id="job-filters">
+    <button class="filter-btn active" onclick="filterJobs('all', this)">All</button>
+    <button class="filter-btn" onclick="filterJobs('internship', this)">Internships</button>
+    <button class="filter-btn" onclick="filterJobs('fulltime', this)">Full-Time</button>
+    <button class="filter-btn" onclick="filterJobs('freelance', this)">Freelance</button>
+    <button class="filter-btn" onclick="filterJobs('equity', this)">Equity / Co-Founder</button>
+    <button class="filter-btn" onclick="filterJobs('volunteer', this)">Volunteer</button>
+  </div>
+
+  <div class="card-grid triple" id="jobs-grid">
+
+    <!-- Internships -->
+    <div class="job-card" data-type="internship">
+      <span class="job-type internship">Internship</span>
+      <h3>SkillHigh Summer 2026</h3>
+      <div class="company">SkillHigh — Wipro Accredited</div>
+      <div class="desc">₹15K–₹25K/month stipend. Wipro, Microsoft, Adobe partner validation and MSME certification.</div>
+      <div class="meta"><b>Apply:</b> forms.gle/6nL5P79L9k33mQA77 · Code: SUMMER2026</div>
+    </div>
+
+    <div class="job-card" data-type="internship">
+      <span class="job-type internship">Internship</span>
+      <h3>Flutter Developer Intern</h3>
+      <div class="company">Early-Stage Startup</div>
+      <div class="desc">Stipend-based Flutter/Dart internship with a mobile-first product team seeking Flutter talent.</div>
+      <div class="meta"><b>Contact:</b> +91 98122 09695 (DM)</div>
+    </div>
+
+    <div class="job-card" data-type="internship">
+      <span class="job-type internship">Internship</span>
+      <h3>Creator Ops · Brand Outreach · Social Media</h3>
+      <div class="company">FlexFund</div>
+      <div class="desc">Three intern roles: Creator Operations, Brand Outreach &amp; Sales, and Social Media &amp; Content. Apply via Google Form.</div>
+      <div class="meta"><b>Contact:</b> +91 87004 38514</div>
+    </div>
+
+    <div class="job-card" data-type="internship">
+      <span class="job-type internship">Internship</span>
+      <h3>Outreach &amp; Data Intelligence Interns</h3>
+      <div class="company">LUNABERS (Deep-Tech / Space)</div>
+      <div class="desc">Unpaid but comes with LOR and certificate. Deep-tech startup in space and automation space.</div>
+      <div class="meta"><b>Apply:</b> forms.gle/Ctyje8Hc3EaL5AsS8</div>
+    </div>
+
+    <div class="job-card" data-type="internship">
+      <span class="job-type internship">Internship</span>
+      <h3>Graphic Designer + Video Editor Intern</h3>
+      <div class="company">Digital Marketing Startup</div>
+      <div class="desc">Submit portfolio/work samples via DM to apply. Great for creative students looking for agency experience.</div>
+      <div class="meta"><b>Contact:</b> +91 91135 05547</div>
+    </div>
+
+    <!-- Full-time -->
+    <div class="job-card" data-type="fulltime">
+      <span class="job-type fulltime">Full-Time</span>
+      <h3>AI &amp; Robotics Trainer</h3>
+      <div class="company">Future Gurukuls — Uttar Pradesh</div>
+      <div class="desc">Conduct AI, Robotics, IoT, 3D Printing sessions for schools, colleges, and industry across UP. B.Tech/M.Tech preferred. Referral: Hitansh Dwivedi.</div>
+      <div class="meta"><b>Apply:</b> hr@futuregurukuls.in</div>
+    </div>
+
+    <div class="job-card" data-type="fulltime">
+      <span class="job-type fulltime">Full-Time</span>
+      <h3>Sales &amp; Marketing Roles</h3>
+      <div class="company">AiCyber.Guru</div>
+      <div class="desc">Product Sales Reps, Territory Executives, Sales &amp; Marketing Manager. Attractive salary + TA &amp; DA. Immediate openings.</div>
+      <div class="meta"><b>Email:</b> Contact@AiCyber.Guru</div>
+    </div>
+
+    <div class="job-card" data-type="fulltime">
+      <span class="job-type fulltime">Full-Time</span>
+      <h3>Video Editor · BDA · B2B Email Marketing</h3>
+      <div class="company">Arcthane AI</div>
+      <div class="desc">Three roles: Video Editor, LinkedIn Sales Navigator BDA, and B2B Email Marketing Specialist. Apply via dedicated portal.</div>
+      <div class="meta"><b>Apply:</b> epg.arcthaneai.com</div>
+    </div>
+
+    <div class="job-card" data-type="fulltime">
+      <span class="job-type fulltime">Full-Time</span>
+      <h3>Odoo Frontend Developer</h3>
+      <div class="company">Arcthane AI</div>
+      <div class="desc">Seeking Odoo frontend developer for internal CRM / business operations tooling. DM for compensation details.</div>
+      <div class="meta"><b>Contact:</b> +92 326 9496518</div>
+    </div>
+
+    <div class="job-card" data-type="fulltime">
+      <span class="job-type fulltime">Full-Time</span>
+      <h3>Video Editor (Remote)</h3>
+      <div class="company">Real Estate Brokerage</div>
+      <div class="desc">₹6,000/month remote video editing role focused on property listing and showcase videos.</div>
+      <div class="meta"><b>Contact:</b> +91 91615 56758</div>
+    </div>
+
+    <!-- Freelance -->
+    <div class="job-card" data-type="freelance">
+      <span class="job-type freelance">Freelance</span>
+      <h3>100 × 2D Animators</h3>
+      <div class="company">Production House / Animation Studio</div>
+      <div class="desc">Large-scale hiring drive for 100 2D Animator positions — signals a major project scaling rapidly.</div>
+      <div class="meta"><b>Contact:</b> Sachin +91 88847 03704 · Dilkush +91 82170 50693</div>
+    </div>
+
+    <div class="job-card" data-type="freelance">
+      <span class="job-type freelance">Freelance</span>
+      <h3>Video Editor + Social Media Manager</h3>
+      <div class="company">Defense Officer (Personal Channels)</div>
+      <div class="desc">Content creation for personal/official channels of a defense professional. Apply via Google Form.</div>
+      <div class="meta"><b>Apply:</b> forms.gle/Uf8BFxSiZ5vKcAHc6</div>
+    </div>
+
+    <div class="job-card" data-type="freelance">
+      <span class="job-type freelance">Freelance</span>
+      <h3>Upwork Bidder / Proposal Writer</h3>
+      <div class="company">Startup (Unnamed)</div>
+      <div class="desc">Seeking an experienced Upwork bidder to handle freelance project acquisition and proposal writing.</div>
+      <div class="meta"><b>Contact:</b> +91 73806 63685</div>
+    </div>
+
+    <!-- Equity -->
+    <div class="job-card" data-type="equity">
+      <span class="job-type equity">Equity</span>
+      <h3>2 Technical Co-Founders</h3>
+      <div class="company">IoT + AI/ML Startup (Stealth)</div>
+      <div class="desc">Looking for 1 IoT specialist + 1 Backend developer as founding co-founders. Equity compensation. High ownership, early stage.</div>
+      <div class="meta"><b>Contact:</b> +91 82258 00163</div>
+    </div>
+
+    <div class="job-card" data-type="equity">
+      <span class="job-type equity">Equity</span>
+      <h3>Technical Co-Founder</h3>
+      <div class="company">Fintech Fraud Detection Startup</div>
+      <div class="desc">Building fraud detection and secure transaction infrastructure for fintechs. Equity-based, serious commitment expected.</div>
+      <div class="meta"><b>Contact:</b> +91 84287 44136</div>
+    </div>
+
+    <div class="job-card" data-type="equity">
+      <span class="job-type equity">Equity</span>
+      <h3>Full-Stack + Frontend Developer</h3>
+      <div class="company">FastAPI + React/TS SaaS MVP</div>
+      <div class="desc">Equity-based roles for full-stack and frontend contributors. Share your GitHub profile to apply.</div>
+      <div class="meta"><b>Contact:</b> +91 88259 07009 (DM with GitHub)</div>
+    </div>
+
+    <div class="job-card" data-type="equity">
+      <span class="job-type equity">Equity</span>
+      <h3>React + Three.js / 3D Web Developer</h3>
+      <div class="company">3D Medical Education Platform</div>
+      <div class="desc">Initially unpaid with equity potential. Building interactive 3D anatomy platform for medical students.</div>
+      <div class="meta"><b>Contact:</b> +91 81256 85107</div>
+    </div>
+
+    <!-- Volunteer -->
+    <div class="job-card" data-type="volunteer">
+      <span class="job-type volunteer">Volunteer</span>
+      <h3>Designer + Content Team Member</h3>
+      <div class="company">GDG Lucknow (Google Developer Groups)</div>
+      <div class="desc">Volunteer roles on design and content/social media teams. Build GDG network credibility. Two separate Google Forms to apply.</div>
+      <div class="meta">
+        <b>Design:</b> forms.gle/YtHTASkK7t6B6zQh6<br>
+        <b>Content:</b> forms.gle/5CShbHRAXUceV2Nb7
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: EVENTS                             -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="events">
+  <div class="section-header">
+    <span class="section-label">05</span>
+    <h2 class="section-title">Events, Hackathons & Programs</h2>
+    <span class="section-count">10 events</span>
+  </div>
+
+  <div class="featured-strip reveal">
+    <span class="label" style="display:inline-flex;align-items:center;gap:6px"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="6,0 12,12 0,12" fill="#ffe600" stroke="#0a0a0a" stroke-width="1.5"/></svg> Happening Now</span>
+    <p>VibeCoding Hackathon April Edition — Kickoff April 24, Submission April 26 · ₹5,000 prize · ₹100/person</p>
+    <a href="https://vibecoding.nxtgensec.org" target="_blank">Register Now →</a>
+  </div>
+
+  <!-- Hackathons -->
+  <div class="cat-header" style="margin-top:8px">Hackathons &amp; Competitions</div>
+  <div class="card-grid wide reveal" style="margin-bottom:32px">
+
+    <div class="event-card">
+      <div class="event-date">
+        <span class="day">24</span>
+        <span class="month">Apr</span>
+        <span class="year">2026</span>
+      </div>
+      <div class="event-body">
+        <h3>VibeCoding Hackathon — April Edition</h3>
+        <p>Online, 2–4 person teams. Kickoff April 24, Submission April 26, Results April 29. Prize: ₹5,000.</p>
+        <div class="event-pills">
+          <span class="event-pill paid">₹100/person</span>
+          <span class="event-pill online">Online</span>
+          <span class="event-pill" style="background:var(--yellow);color:#000;border:2px solid #000;">₹5K Prize</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-date">
+        <span class="day">25</span>
+        <span class="month">Apr</span>
+        <span class="year">2026</span>
+      </div>
+      <div class="event-body">
+        <h3>Hack-Nation Global AI Hackathon</h3>
+        <p>In-person at Maters' Union, Gurugram. April 25–26. $30,000 cash + $150,000 in platform credits up for grabs.</p>
+        <div class="event-pills">
+          <span class="event-pill offline">Gurugram</span>
+          <span class="event-pill" style="background:var(--yellow);color:#000;border:2px solid #000;">$30K Cash</span>
+          <span class="event-pill" style="background:var(--green);color:#000;border:2px solid #000;">$150K Credits</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-date">
+        <span class="day">28</span>
+        <span class="month">Apr</span>
+        <span class="year">2026</span>
+      </div>
+      <div class="event-body">
+        <h3>Google Solution Challenge 2026 — Build with AI</h3>
+        <p>Registration extended to April 28. ₹10L prize pool (₹4L 1st place). Requires Gemini API / Vertex AI / Flutter / GCP.</p>
+        <div class="event-pills">
+          <span class="event-pill online">Online</span>
+          <span class="event-pill" style="background:var(--yellow);color:#000;border:2px solid #000;">₹10L Prize</span>
+          <span class="event-pill" style="background:var(--blue);color:#000;border:2px solid #000;">Google Tech</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-date">
+        <span class="day">07</span>
+        <span class="month">May</span>
+        <span class="year">2026</span>
+      </div>
+      <div class="event-body">
+        <h3>Code Nakshatra 2.0</h3>
+        <p>24-hour in-person hackathon at TIIPS, Greater Noida. May 7–8. ₹5L+ prize pool, free food and accommodation.</p>
+        <div class="event-pills">
+          <span class="event-pill free">Free Stay &amp; Food</span>
+          <span class="event-pill offline">Greater Noida</span>
+          <span class="event-pill" style="background:var(--yellow);color:#000;border:2px solid #000;">₹5L+ Prize</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-date">
+        <span class="day">08</span>
+        <span class="month">May</span>
+        <span class="year">2026</span>
+      </div>
+      <div class="event-body">
+        <h3>Bot-a-thon — AI Agents Hackathon</h3>
+        <p>Global online hackathon May 8–10 focused on AI agents. Perfect for builders working on agentic systems.</p>
+        <div class="event-pills">
+          <span class="event-pill online">Online / Worldwide</span>
+          <span class="event-pill" style="background:var(--purple);color:#fff;border:2px solid #000;">AI Agents</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Academic -->
+  <div class="cat-header">Academic Conferences</div>
+  <div class="card-grid wide reveal" style="margin-bottom:32px">
+
+    <div class="event-card">
+      <div class="event-date">
+        <span class="day">20</span>
+        <span class="month">Nov</span>
+        <span class="year">2026</span>
+      </div>
+      <div class="event-body">
+        <h3>IEEE ISDDC-2026 — Intelligent Systems &amp; Data-Driven Computing</h3>
+        <p>Physical conference at BBDITM, Lucknow. Co-sponsored by IEEE UP Section. Paper submission deadline: July 15, 2026. Record No.: 70090.</p>
+        <div class="event-pills">
+          <span class="event-pill offline">Lucknow</span>
+          <span class="event-pill" style="background:var(--blue);color:#000;border:2px solid #000;">IEEE</span>
+          <span class="event-pill paid">Paper Deadline: Jul 15</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Workshops -->
+  <div class="cat-header">Workshops &amp; Recurring Programs</div>
+  <div class="card-grid triple reveal">
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">Free</span>
+        <div class="card-title">Lucknow AI Labs Paper Reading — Season 2</div>
+        <div class="card-desc">Every Sunday 6–7 PM IST. Free community event for researchers and ML practitioners. Season 2 currently running.</div>
+        <div class="pill-row"><span class="pill">Weekly</span><span class="pill">Free</span><span class="pill">Online</span></div>
+        <div class="card-meta"><b>Contact:</b> Lucknow AI Labs community / +91 90746 83618</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Free</span>
+        <div class="card-title">30-Hour AI Agents &amp; GenAI Workshop</div>
+        <div class="card-desc">Every weekend on Zoom — 10 AM EST / 7:30 PM IST. Hands-on AI agents and generative AI workshop for builders.</div>
+        <div class="pill-row"><span class="pill">Weekend</span><span class="pill">Free</span><span class="pill">Zoom</span><span class="pill">30 Hours</span></div>
+        <div class="card-meta"><b>Time:</b> 10 AM EST · 7:30 PM IST</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent yellow"></div>
+      <div class="card-body">
+        <span class="card-tag yellow">Cohort</span>
+        <div class="card-title">Ignite 1% Builder Network — Cohort 1</div>
+        <div class="card-desc">Selective community for serious builders. Rolling applications open. ₹67 commitment if selected — signals high intentionality from applicants.</div>
+        <div class="pill-row"><span class="pill">Rolling Apps</span><span class="pill">₹67 if selected</span><span class="pill">Elite Network</span></div>
+        <a href="https://forms.gle/oh1SmxnBWpYVaPcKA" class="card-link" target="_blank">Apply Now →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: LEARNING RESOURCES                 -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="learn">
+  <div class="section-header">
+    <span class="section-label">06</span>
+    <h2 class="section-title">Learning Resources</h2>
+    <span class="section-count">14 resources</span>
+  </div>
+
+  <div class="card-grid triple reveal" style="margin-bottom:32px">
+
+    <div class="card">
+      <div class="card-accent yellow"></div>
+      <div class="card-body">
+        <span class="card-tag yellow">Free Report</span>
+        <div class="card-title">Stanford 2026 AI Index</div>
+        <div class="card-desc">400+ page comprehensive annual report covering AI progress, policy, economy, and society. The definitive reference for staying current on the AI landscape.</div>
+        <div class="pill-row"><span class="pill">400+ Pages</span><span class="pill">Free PDF</span><span class="pill">Annual</span></div>
+        <div class="card-meta"><b>Source:</b> stanfordhai.edu/ai-index</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">Research</span>
+        <div class="card-title">Anthropic: Measuring Agent Autonomy</div>
+        <div class="card-desc">Anthropic's published research on measuring AI agent autonomy. Directly relevant to anyone building AI agent products or researching AI safety.</div>
+        <div class="pill-row"><span class="pill">AI Safety</span><span class="pill">Agent Building</span><span class="pill">Research</span></div>
+        <a href="https://anthropic.com/research/measuring-agent-autonomy" class="card-link" target="_blank">Read Paper →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">Docs</span>
+        <div class="card-title">Google ADK Documentation</div>
+        <div class="card-desc">Official Google Agent Development Kit docs for building multi-agent systems. The authoritative resource for Google's multi-agent framework.</div>
+        <div class="pill-row"><span class="pill">Multi-Agent</span><span class="pill">Official Docs</span><span class="pill">Free</span></div>
+        <a href="https://google.github.io/adk-docs/" class="card-link" target="_blank">ADK Docs →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent orange"></div>
+      <div class="card-body">
+        <span class="card-tag orange">Protocol</span>
+        <div class="card-title">MCP — Model Context Protocol</div>
+        <div class="card-desc">Anthropic's Model Context Protocol crossed 97 million installs. The standard protocol for connecting AI agents to external tools and data sources.</div>
+        <div class="pill-row"><span class="pill">97M+ Installs</span><span class="pill">Agent Tooling</span><span class="pill">Standard</span></div>
+        <a href="https://modelcontextprotocol.io" class="card-link" target="_blank">MCP Docs →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent pink"></div>
+      <div class="card-body">
+        <span class="card-tag pink">ICLR 2026</span>
+        <div class="card-title">Google TurboQuant</div>
+        <div class="card-desc">ICLR 2026 research that significantly reduces KV cache memory overhead in LLMs. Key reading for anyone working on inference optimization.</div>
+        <div class="pill-row"><span class="pill">KV Cache</span><span class="pill">Inference Opt</span><span class="pill">ICLR 2026</span></div>
+        <div class="card-meta"><b>Find:</b> arxiv.org / Google Research blog</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <span class="card-tag">Benchmark</span>
+        <div class="card-title">LongMemEval</div>
+        <div class="card-desc">GitHub benchmark for evaluating agent retrieval memory. The closest available eval for testing long-term agent context retrieval — unbeaten for 3 years.</div>
+        <div class="pill-row"><span class="pill">Unbeaten 3yr</span><span class="pill">Agent Memory</span><span class="pill">Open Source</span></div>
+        <a href="https://github.com/xiaowu0162/LongMemEval" class="card-link" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent blue"></div>
+      <div class="card-body">
+        <span class="card-tag blue">Interactive</span>
+        <div class="card-title">Karpathy LLM Council</div>
+        <div class="card-desc">Interactive Hugging Face Space by Andrej Karpathy for learning LLM concepts hands-on. Free and accessible directly in the browser.</div>
+        <div class="pill-row"><span class="pill">Free</span><span class="pill">Interactive</span><span class="pill">LLM Basics</span></div>
+        <a href="https://share.google/Jm5PeeHKiBlt96VYG" class="card-link" target="_blank">Try It →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent yellow"></div>
+      <div class="card-body">
+        <span class="card-tag yellow">Claude Skills</span>
+        <div class="card-title">Product Manager Claude Skill</div>
+        <div class="card-desc">Open-source Claude Code skill template for product management workflows — contributed by the community. Drop into your Claude Code setup and extend it.</div>
+        <div class="pill-row"><span class="pill">Open Source</span><span class="pill">Claude Code</span><span class="pill">PM Workflows</span></div>
+        <a href="https://github.com/jackreacher80/product-manager-skill" class="card-link" target="_blank">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-accent green"></div>
+      <div class="card-body">
+        <span class="card-tag green">PR Review</span>
+        <div class="card-title">Claude Code Code Review</div>
+        <div class="card-desc">Anthropic's parallel AI agent PR review feature — multiple agents review pull requests for bugs, security vulnerabilities, and regressions. 84% detection rate on large PRs.</div>
+        <div class="pill-row"><span class="pill">84% Detection</span><span class="pill">Parallel Agents</span><span class="pill">Line-level</span></div>
+        <div class="card-meta"><b>Feature:</b> Inline PR comments with line-level feedback</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Free Coding Platforms -->
+  <div class="cat-header">Free Coding Learning Platforms</div>
+  <div class="card-grid triple reveal">
+    <div class="card">
+      <div class="card-accent yellow"></div>
+      <div class="card-body">
+        <div class="card-title">Free Coding Curriculum</div>
+        <div class="card-desc">Eight community-recommended free platforms for learning to code and preparing for technical interviews:</div>
+        <ul style="list-style:none;margin-top:10px">
+          <li style="padding:5px 0;border-bottom:1px solid #ddd;font-size:12px"><b>freeCodeCamp.org</b> — Full stack / JS / Python</li>
+          <li style="padding:5px 0;border-bottom:1px solid #ddd;font-size:12px"><b>The Odin Project</b> — Full-stack web dev</li>
+          <li style="padding:5px 0;border-bottom:1px solid #ddd;font-size:12px"><b>GeeksforGeeks</b> — DSA, CS fundamentals, interviews</li>
+          <li style="padding:5px 0;border-bottom:1px solid #ddd;font-size:12px"><b>LeetCode.com</b> — Interview prep / DSA problems</li>
+          <li style="padding:5px 0;border-bottom:1px solid #ddd;font-size:12px"><b>HackerRank.com</b> — Competitive coding</li>
+          <li style="padding:5px 0;border-bottom:1px solid #ddd;font-size:12px"><b>Codewars.com</b> — Kata-style challenges</li>
+          <li style="padding:5px 0;border-bottom:1px solid #ddd;font-size:12px"><b>Exercism.org</b> — Mentor-guided practice</li>
+          <li style="padding:5px 0;font-size:12px"><b>W3Schools.com</b> — Reference + tutorials</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: PROMOS                             -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="promos">
+  <div class="section-header">
+    <span class="section-label">07</span>
+    <h2 class="section-title">Promos, Free Offers &amp; Deals</h2>
+    <span class="section-count">6 deals</span>
+  </div>
+
+  <div class="card-grid triple reveal">
+
+    <div class="promo-card">
+      <h3>Lovable.dev</h3>
+      <p>AI-powered web app builder offering a full free month. Use code at checkout:</p>
+      <div class="promo-code">KEYWORDSUIUC</div>
+      <p style="font-size:11px;color:#888;margin-top:6px">Limited time. No credit card required with promo.</p>
+    </div>
+
+    <div class="promo-card">
+      <h3>Microsoft Azure for Students</h3>
+      <p>$100 free Azure cloud credits + VS Code and dev tools access. No credit card needed — just a college email.</p>
+      <div class="promo-code" style="font-size:14px">College Email →</div>
+      <a href="https://azure.microsoft.com/free/students" class="card-link" target="_blank" style="margin-top:12px;display:inline-block">azure.microsoft.com →</a>
+    </div>
+
+    <div class="promo-card">
+      <h3>Gemini Pro — 4 Months Free</h3>
+      <p>Jio SIM card holders in India get 4 months of Gemini Pro free (~₹35,000 value). Available via the Jio app.</p>
+      <div class="promo-code" style="font-size:14px">Jio SIM Required</div>
+      <p style="font-size:11px;color:#888;margin-top:6px">India only · Active Jio SIM card required</p>
+    </div>
+
+    <div class="promo-card">
+      <h3>ChatGPT Pro — 6 Months Free</h3>
+      <p>OpenAI offering near-unlimited Codex access for active open-source contributors. Requires demonstrated long-term OSS contributions to reputable projects.</p>
+      <div class="promo-code" style="font-size:12px">OSS Contributors</div>
+      <a href="https://developers.openai.com/codex/community/codex-for-oss" class="card-link" target="_blank" style="margin-top:12px;display:inline-block">Apply →</a>
+    </div>
+
+    <div class="promo-card">
+      <h3>SkillHigh Summer Internship 2026</h3>
+      <p>₹15K–₹25K/month stipend. Wipro-accredited, MSME certified. Microsoft &amp; Adobe partners.</p>
+      <div class="promo-code">SUMMER2026</div>
+      <a href="https://forms.gle/6nL5P79L9k33mQA77" class="card-link" target="_blank" style="margin-top:12px;display:inline-block">Apply via Form →</a>
+    </div>
+
+    <div class="promo-card">
+      <h3>Google Solution Challenge</h3>
+      <p>Use referral code for the Google Solution Challenge 2026. ₹10L prize pool. Register before April 28.</p>
+      <div class="promo-code">AMA2EH</div>
+      <a href="https://promptwars.in/solutionchallenge2026.html" class="card-link" target="_blank" style="margin-top:12px;display:inline-block">Register →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: SECURITY ALERTS                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="security" style="background:#f5ebe0">
+  <div class="section-header">
+    <span class="section-label" style="background:var(--orange);color:#fff">08</span>
+    <h2 class="section-title">Security Alerts</h2>
+    <span class="section-count">3 active threats</span>
+  </div>
+
+  <div class="security-section reveal">
+    <div class="sec-header">
+      <div class="sec-icon"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="11,2 21,20 1,20" stroke="#0a0a0a" stroke-width="2" fill="none"/><rect x="10" y="8" width="2" height="6" fill="#0a0a0a"/><rect x="10" y="15.5" width="2" height="2" fill="#0a0a0a"/></svg></div>
+      <div class="sec-title">Active Security Vulnerabilities — Act Immediately</div>
+    </div>
+    <p style="font-size:12px;color:#888;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px">Flagged by CIC (Cyber Intelligence Community) Lucknow — March/April 2026</p>
+    <div class="sec-alerts">
+
+      <div class="sec-alert">
+        <h4 style="display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="5.5" stroke="#ff6b00" stroke-width="1.5" fill="none"/><circle cx="4" cy="5.5" r="1" fill="#ff6b00"/><circle cx="10" cy="5.5" r="1" fill="#ff6b00"/><path d="M4.5 9.5 Q7 11.5 9.5 9.5" stroke="#ff6b00" stroke-width="1.2" fill="none"/><line x1="2" y1="3" x2="4" y2="5" stroke="#ff6b00" stroke-width="1.2"/><line x1="12" y1="3" x2="10" y2="5" stroke="#ff6b00" stroke-width="1.2"/><line x1="7" y1="1" x2="7" y2="3" stroke="#ff6b00" stroke-width="1.2"/></svg> Axios npm Package — RAT Detected</h4>
+        <p>A Remote Access Trojan was discovered in an Axios npm package version (flagged March 31, 2026). If you use Axios in any Node.js project, audit your <code style="background:#333;padding:2px 5px;font-family:monospace">package.json</code> immediately. Pin to a clean version or update.</p>
+      </div>
+
+      <div class="sec-alert">
+        <h4 style="display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5.5" r="3.5" stroke="#ff6b00" stroke-width="1.5" fill="none"/><line x1="7.5" y1="7.5" x2="13" y2="13" stroke="#ff6b00" stroke-width="2" stroke-linecap="square"/><line x1="10.5" y1="10" x2="10.5" y2="12" stroke="#ff6b00" stroke-width="1.5"/><line x1="12" y1="11.5" x2="13.5" y2="11.5" stroke="#ff6b00" stroke-width="1.5"/></svg> OpenAI Codex — GitHub Token Exposure</h4>
+        <p>Codex was found exposing GitHub personal access tokens in its request flow. If you've used Codex with GitHub integrations, rotate any affected tokens from your GitHub settings immediately.</p>
+      </div>
+
+      <div class="sec-alert">
+        <h4 style="display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="5.5" stroke="#ff6b00" stroke-width="1.5" fill="none"/><line x1="1.5" y1="7" x2="12.5" y2="7" stroke="#ff6b00" stroke-width="1.2"/><path d="M4 3.5 Q7 2 10 3.5" stroke="#ff6b00" stroke-width="1.2" fill="none"/><path d="M4 10.5 Q7 12 10 10.5" stroke="#ff6b00" stroke-width="1.2" fill="none"/><line x1="7" y1="1.5" x2="7" y2="12.5" stroke="#ff6b00" stroke-width="1.2"/></svg> Chrome — Critical Security Update Required</h4>
+        <p>A critical Chrome browser vulnerability is actively being exploited in the wild. Update Chrome to the latest stable version immediately via Settings → Help → About Google Chrome.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">// REPUTATION.INTEL</div>
+      <div class="footer-desc">Curated intelligence from India's most active AI, startup, and developer communities. All resources extracted from community WhatsApp groups including Lucknow AI Labs, Ignition in AI Era, CIC, GDG Lucknow, SaaS &amp; Startup, Hackathon Enthusiasts, and more.</div>
+    </div>
+    <div>
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#models">AI Models</a></li>
+        <li><a href="#tools">AI Tools</a></li>
+        <li><a href="#startups">Startups</a></li>
+        <li><a href="#jobs">Job Opps</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Resources</h4>
+      <ul>
+        <li><a href="#events">Events</a></li>
+        <li><a href="#learn">Learning</a></li>
+        <li><a href="#promos">Promos</a></li>
+        <li><a href="#security">Security</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Communities</h4>
+      <ul>
+        <li><a href="#" target="_blank">Lucknow AI Labs</a></li>
+        <li><a href="https://www.reddit.com/r/Ignitioninaiera/s/aJdRDmyLjW" target="_blank">Ignition in AI Era</a></li>
+        <li><a href="https://ignitioninaiera.space" target="_blank">ignitioninaiera.space</a></li>
+        <li><a href="#" target="_blank">GDG Lucknow</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Built from community intelligence · April 23, 2026 · <b>REPUTATION.INTEL</b></span>
+    <span>All contact numbers are from public community messages</span>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<a href="#" class="btt" title="Back to top">↑</a>
+
+<script>
+  // ── REVEAL ON SCROLL ──
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ── JOB FILTER ──
+  function filterJobs(type, btn) {
+    document.querySelectorAll('#job-filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#jobs-grid .job-card').forEach(card => {
+      card.style.display = (type === 'all' || card.dataset.type === type) ? '' : 'none';
+    });
+  }
+
+  // ── ACTIVE NAV ON SCROLL ──
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const onScroll = () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+</body>
+</html>
