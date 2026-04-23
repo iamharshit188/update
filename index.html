@@ -786,6 +786,94 @@
       opacity: 1;
       transform: none;
     }
+
+    /* ─── FILTER BAR ─── */
+    .filter-bar {
+      display: flex;
+      align-items: stretch;
+      margin-bottom: 24px;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+      scrollbar-width: none;
+      background: var(--black);
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-bar-label {
+      background: #111;
+      color: #555;
+      font-family: var(--font-head);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      border-right: 2px solid #2a2a2a;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .filter-bar .fbtn {
+      background: var(--black);
+      color: #777;
+      border: none;
+      border-right: 1px solid #1e1e1e;
+      padding: 11px 18px;
+      font-family: var(--font-body);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      outline: none;
+    }
+    .filter-bar .fbtn:hover { background: #1c1c1c; color: var(--white); }
+    .filter-bar .fbtn.active { background: var(--yellow); color: var(--black); }
+    .filter-count {
+      margin-left: auto;
+      background: #0e0e0e;
+      color: #444;
+      font-family: var(--font-head);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      border-left: 1px solid #1e1e1e;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .filter-count .fc-num { color: var(--yellow); font-size: 13px; margin-right: 4px; }
+
+    /* ─── CARD FILTER ANIMATION ─── */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card-show,
+    .job-card.card-show,
+    .event-card.card-show { animation: cardIn 0.18s ease forwards; }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 48px 24px;
+      border: 3px dashed #ccc;
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #aaa;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -1072,12 +1160,26 @@
   <div class="section-header">
     <span class="section-label">02</span>
     <h2 class="section-title">AI Tools & Platforms</h2>
-    <span class="section-count">14 tools</span>
+    <span class="section-count" id="tools-count">12 tools</span>
   </div>
 
-  <div class="card-grid triple reveal">
+  <div class="filter-bar" id="tools-filters">
+    <span class="filter-bar-label">Filter</span>
+    <button class="fbtn active" onclick="filterSection('all',this,'tools-filters','tools-grid')">All</button>
+    <button class="fbtn" onclick="filterSection('multi-model',this,'tools-filters','tools-grid')">Multi-Model</button>
+    <button class="fbtn" onclick="filterSection('open-source',this,'tools-filters','tools-grid')">Open Source</button>
+    <button class="fbtn" onclick="filterSection('dev-tool',this,'tools-filters','tools-grid')">Dev Tools</button>
+    <button class="fbtn" onclick="filterSection('video-ai',this,'tools-filters','tools-grid')">Video AI</button>
+    <button class="fbtn" onclick="filterSection('free',this,'tools-filters','tools-grid')">Free</button>
+    <button class="fbtn" onclick="filterSection('privacy',this,'tools-filters','tools-grid')">Privacy</button>
+    <button class="fbtn" onclick="filterSection('no-code',this,'tools-filters','tools-grid')">No Code</button>
+    <button class="fbtn" onclick="filterSection('tiny-ml',this,'tools-filters','tools-grid')">Tiny ML</button>
+    <span class="filter-count"><span class="fc-num" id="tools-fc">12</span>shown</span>
+  </div>
 
-    <div class="card">
+  <div class="card-grid triple" id="tools-grid">
+
+    <div class="card" data-filter="multi-model">
       <div class="card-accent pink"></div>
       <div class="card-body">
         <span class="card-tag pink">Multi-Model</span>
@@ -1090,7 +1192,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="dev-tool open-source">
       <div class="card-accent"></div>
       <div class="card-body">
         <span class="card-tag">Dev Tool</span>
@@ -1101,7 +1203,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="open-source privacy">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">Open Source</span>
@@ -1112,7 +1214,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="video-ai">
       <div class="card-accent orange"></div>
       <div class="card-body">
         <span class="card-tag orange">Video AI</span>
@@ -1123,7 +1225,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="free">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">Free + Paid</span>
@@ -1134,7 +1236,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="free no-code">
       <div class="card-accent yellow"></div>
       <div class="card-body">
         <span class="card-tag yellow">No Code</span>
@@ -1145,7 +1247,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="tiny-ml">
       <div class="card-accent"></div>
       <div class="card-body">
         <span class="card-tag">Tiny ML</span>
@@ -1156,7 +1258,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="dev-tool">
       <div class="card-accent pink"></div>
       <div class="card-body">
         <span class="card-tag pink">Dev Tool</span>
@@ -1167,7 +1269,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="privacy">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">Privacy</span>
@@ -1178,7 +1280,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="showcase">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">Showcase</span>
@@ -1189,7 +1291,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="open-source">
       <div class="card-accent orange"></div>
       <div class="card-body">
         <span class="card-tag orange">Open Source</span>
@@ -1200,7 +1302,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="dev-tool open-source">
       <div class="card-accent"></div>
       <div class="card-body">
         <span class="card-tag">XibeAI</span>
@@ -1221,14 +1323,23 @@
   <div class="section-header">
     <span class="section-label">03</span>
     <h2 class="section-title">Startup Launches</h2>
-    <span class="section-count">30+ startups</span>
+    <span class="section-count" id="startups-count">20 startups</span>
   </div>
 
-  <!-- AI & Dev Tools -->
-  <div class="cat-header">AI &amp; Developer Tools</div>
-  <div class="card-grid triple reveal" style="margin-bottom:32px">
+  <div class="filter-bar" id="startups-filters">
+    <span class="filter-bar-label">Filter</span>
+    <button class="fbtn active" onclick="filterSection('all',this,'startups-filters','startups-grid')">All</button>
+    <button class="fbtn" onclick="filterSection('ai-dev',this,'startups-filters','startups-grid')">AI &amp; Dev</button>
+    <button class="fbtn" onclick="filterSection('edtech',this,'startups-filters','startups-grid')">EdTech</button>
+    <button class="fbtn" onclick="filterSection('fintech',this,'startups-filters','startups-grid')">Fintech</button>
+    <button class="fbtn" onclick="filterSection('b2b-saas',this,'startups-filters','startups-grid')">B2B SaaS</button>
+    <button class="fbtn" onclick="filterSection('social',this,'startups-filters','startups-grid')">Social</button>
+    <span class="filter-count"><span class="fc-num" id="startups-fc">20</span>shown</span>
+  </div>
 
-    <div class="card">
+  <div class="card-grid triple" id="startups-grid">
+
+    <div class="card" data-filter="ai-dev">
       <div class="card-accent"></div>
       <div class="card-body">
         <span class="card-tag">Dev Tools</span>
@@ -1239,7 +1350,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="ai-dev">
       <div class="card-accent pink"></div>
       <div class="card-body">
         <span class="card-tag pink">Chrome Ext</span>
@@ -1250,7 +1361,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="ai-dev">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">BaaS</span>
@@ -1261,7 +1372,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="ai-dev">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">Free</span>
@@ -1272,7 +1383,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="ai-dev">
       <div class="card-accent orange"></div>
       <div class="card-body">
         <span class="card-tag orange">Awadhi NLP</span>
@@ -1283,13 +1394,8 @@
       </div>
     </div>
 
-  </div>
 
-  <!-- EdTech -->
-  <div class="cat-header">EdTech &amp; Learning</div>
-  <div class="card-grid triple reveal" style="margin-bottom:32px">
-
-    <div class="card">
+    <div class="card" data-filter="edtech">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">EdTech</span>
@@ -1300,7 +1406,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="edtech">
       <div class="card-accent pink"></div>
       <div class="card-body">
         <span class="card-tag pink">MedTech</span>
@@ -1311,7 +1417,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="edtech">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">Incubator</span>
@@ -1322,13 +1428,8 @@
       </div>
     </div>
 
-  </div>
 
-  <!-- Fintech -->
-  <div class="cat-header">Fintech &amp; Investment</div>
-  <div class="card-grid triple reveal" style="margin-bottom:32px">
-
-    <div class="card">
+    <div class="card" data-filter="fintech">
       <div class="card-accent yellow"></div>
       <div class="card-body">
         <span class="card-tag yellow">Fintech</span>
@@ -1339,7 +1440,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="fintech">
       <div class="card-accent"></div>
       <div class="card-body">
         <span class="card-tag">Matchmaking</span>
@@ -1350,7 +1451,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="fintech">
       <div class="card-accent orange"></div>
       <div class="card-body">
         <span class="card-tag orange">Stealth</span>
@@ -1361,13 +1462,8 @@
       </div>
     </div>
 
-  </div>
 
-  <!-- B2B SaaS -->
-  <div class="cat-header">B2B SaaS &amp; Productivity</div>
-  <div class="card-grid triple reveal" style="margin-bottom:32px">
-
-    <div class="card">
+    <div class="card" data-filter="b2b-saas">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">Healthcare</span>
@@ -1378,7 +1474,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="b2b-saas">
       <div class="card-accent pink"></div>
       <div class="card-body">
         <span class="card-tag pink">Freelancer</span>
@@ -1389,7 +1485,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="b2b-saas">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">Creator Tools</span>
@@ -1400,7 +1496,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="b2b-saas">
       <div class="card-accent"></div>
       <div class="card-body">
         <span class="card-tag">Cybersecurity</span>
@@ -1411,7 +1507,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="b2b-saas">
       <div class="card-accent yellow"></div>
       <div class="card-body">
         <span class="card-tag yellow">Restaurant</span>
@@ -1422,7 +1518,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="b2b-saas">
       <div class="card-accent orange"></div>
       <div class="card-body">
         <span class="card-tag orange">Young Founder</span>
@@ -1433,13 +1529,8 @@
       </div>
     </div>
 
-  </div>
 
-  <!-- Social & Consumer -->
-  <div class="cat-header">Social &amp; Consumer Apps</div>
-  <div class="card-grid triple reveal">
-
-    <div class="card">
+    <div class="card" data-filter="social">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">Social</span>
@@ -1450,7 +1541,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="social">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">Creator Economy</span>
@@ -1461,7 +1552,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="social">
       <div class="card-accent pink"></div>
       <div class="card-body">
         <span class="card-tag pink">UGC</span>
@@ -1472,6 +1563,7 @@
       </div>
     </div>
 
+    <div class="empty-state" id="startups-empty">No startups match this filter.</div>
   </div>
 </section>
 
@@ -1485,19 +1577,21 @@
     <span class="section-count">30+ roles</span>
   </div>
 
-  <div class="filter-row" id="job-filters">
-    <button class="filter-btn active" onclick="filterJobs('all', this)">All</button>
-    <button class="filter-btn" onclick="filterJobs('internship', this)">Internships</button>
-    <button class="filter-btn" onclick="filterJobs('fulltime', this)">Full-Time</button>
-    <button class="filter-btn" onclick="filterJobs('freelance', this)">Freelance</button>
-    <button class="filter-btn" onclick="filterJobs('equity', this)">Equity / Co-Founder</button>
-    <button class="filter-btn" onclick="filterJobs('volunteer', this)">Volunteer</button>
+  <div class="filter-bar" id="job-filters">
+    <span class="filter-bar-label">Filter</span>
+    <button class="fbtn active" onclick="filterSection('all',this,'job-filters','jobs-grid')">All</button>
+    <button class="fbtn" onclick="filterSection('internship',this,'job-filters','jobs-grid')">Internships</button>
+    <button class="fbtn" onclick="filterSection('fulltime',this,'job-filters','jobs-grid')">Full-Time</button>
+    <button class="fbtn" onclick="filterSection('freelance',this,'job-filters','jobs-grid')">Freelance</button>
+    <button class="fbtn" onclick="filterSection('equity',this,'job-filters','jobs-grid')">Equity / Co-Founder</button>
+    <button class="fbtn" onclick="filterSection('volunteer',this,'job-filters','jobs-grid')">Volunteer</button>
+    <span class="filter-count"><span class="fc-num" id="jobs-fc">18</span>shown</span>
   </div>
 
   <div class="card-grid triple" id="jobs-grid">
 
     <!-- Internships -->
-    <div class="job-card" data-type="internship">
+    <div class="job-card" data-filter="internship">
       <span class="job-type internship">Internship</span>
       <h3>SkillHigh Summer 2026</h3>
       <div class="company">SkillHigh — Wipro Accredited</div>
@@ -1505,7 +1599,7 @@
       <div class="meta"><b>Apply:</b> forms.gle/6nL5P79L9k33mQA77 · Code: SUMMER2026</div>
     </div>
 
-    <div class="job-card" data-type="internship">
+    <div class="job-card" data-filter="internship">
       <span class="job-type internship">Internship</span>
       <h3>Flutter Developer Intern</h3>
       <div class="company">Early-Stage Startup</div>
@@ -1513,7 +1607,7 @@
       <div class="meta"><b>Contact:</b> +91 98122 09695 (DM)</div>
     </div>
 
-    <div class="job-card" data-type="internship">
+    <div class="job-card" data-filter="internship">
       <span class="job-type internship">Internship</span>
       <h3>Creator Ops · Brand Outreach · Social Media</h3>
       <div class="company">FlexFund</div>
@@ -1521,7 +1615,7 @@
       <div class="meta"><b>Contact:</b> +91 87004 38514</div>
     </div>
 
-    <div class="job-card" data-type="internship">
+    <div class="job-card" data-filter="internship">
       <span class="job-type internship">Internship</span>
       <h3>Outreach &amp; Data Intelligence Interns</h3>
       <div class="company">LUNABERS (Deep-Tech / Space)</div>
@@ -1529,7 +1623,7 @@
       <div class="meta"><b>Apply:</b> forms.gle/Ctyje8Hc3EaL5AsS8</div>
     </div>
 
-    <div class="job-card" data-type="internship">
+    <div class="job-card" data-filter="internship">
       <span class="job-type internship">Internship</span>
       <h3>Graphic Designer + Video Editor Intern</h3>
       <div class="company">Digital Marketing Startup</div>
@@ -1538,7 +1632,7 @@
     </div>
 
     <!-- Full-time -->
-    <div class="job-card" data-type="fulltime">
+    <div class="job-card" data-filter="fulltime">
       <span class="job-type fulltime">Full-Time</span>
       <h3>AI &amp; Robotics Trainer</h3>
       <div class="company">Future Gurukuls — Uttar Pradesh</div>
@@ -1546,7 +1640,7 @@
       <div class="meta"><b>Apply:</b> hr@futuregurukuls.in</div>
     </div>
 
-    <div class="job-card" data-type="fulltime">
+    <div class="job-card" data-filter="fulltime">
       <span class="job-type fulltime">Full-Time</span>
       <h3>Sales &amp; Marketing Roles</h3>
       <div class="company">AiCyber.Guru</div>
@@ -1554,7 +1648,7 @@
       <div class="meta"><b>Email:</b> Contact@AiCyber.Guru</div>
     </div>
 
-    <div class="job-card" data-type="fulltime">
+    <div class="job-card" data-filter="fulltime">
       <span class="job-type fulltime">Full-Time</span>
       <h3>Video Editor · BDA · B2B Email Marketing</h3>
       <div class="company">Arcthane AI</div>
@@ -1562,7 +1656,7 @@
       <div class="meta"><b>Apply:</b> epg.arcthaneai.com</div>
     </div>
 
-    <div class="job-card" data-type="fulltime">
+    <div class="job-card" data-filter="fulltime">
       <span class="job-type fulltime">Full-Time</span>
       <h3>Odoo Frontend Developer</h3>
       <div class="company">Arcthane AI</div>
@@ -1570,7 +1664,7 @@
       <div class="meta"><b>Contact:</b> +92 326 9496518</div>
     </div>
 
-    <div class="job-card" data-type="fulltime">
+    <div class="job-card" data-filter="fulltime">
       <span class="job-type fulltime">Full-Time</span>
       <h3>Video Editor (Remote)</h3>
       <div class="company">Real Estate Brokerage</div>
@@ -1579,7 +1673,7 @@
     </div>
 
     <!-- Freelance -->
-    <div class="job-card" data-type="freelance">
+    <div class="job-card" data-filter="freelance">
       <span class="job-type freelance">Freelance</span>
       <h3>100 × 2D Animators</h3>
       <div class="company">Production House / Animation Studio</div>
@@ -1587,7 +1681,7 @@
       <div class="meta"><b>Contact:</b> Sachin +91 88847 03704 · Dilkush +91 82170 50693</div>
     </div>
 
-    <div class="job-card" data-type="freelance">
+    <div class="job-card" data-filter="freelance">
       <span class="job-type freelance">Freelance</span>
       <h3>Video Editor + Social Media Manager</h3>
       <div class="company">Defense Officer (Personal Channels)</div>
@@ -1595,7 +1689,7 @@
       <div class="meta"><b>Apply:</b> forms.gle/Uf8BFxSiZ5vKcAHc6</div>
     </div>
 
-    <div class="job-card" data-type="freelance">
+    <div class="job-card" data-filter="freelance">
       <span class="job-type freelance">Freelance</span>
       <h3>Upwork Bidder / Proposal Writer</h3>
       <div class="company">Startup (Unnamed)</div>
@@ -1604,7 +1698,7 @@
     </div>
 
     <!-- Equity -->
-    <div class="job-card" data-type="equity">
+    <div class="job-card" data-filter="equity">
       <span class="job-type equity">Equity</span>
       <h3>2 Technical Co-Founders</h3>
       <div class="company">IoT + AI/ML Startup (Stealth)</div>
@@ -1612,7 +1706,7 @@
       <div class="meta"><b>Contact:</b> +91 82258 00163</div>
     </div>
 
-    <div class="job-card" data-type="equity">
+    <div class="job-card" data-filter="equity">
       <span class="job-type equity">Equity</span>
       <h3>Technical Co-Founder</h3>
       <div class="company">Fintech Fraud Detection Startup</div>
@@ -1620,7 +1714,7 @@
       <div class="meta"><b>Contact:</b> +91 84287 44136</div>
     </div>
 
-    <div class="job-card" data-type="equity">
+    <div class="job-card" data-filter="equity">
       <span class="job-type equity">Equity</span>
       <h3>Full-Stack + Frontend Developer</h3>
       <div class="company">FastAPI + React/TS SaaS MVP</div>
@@ -1628,7 +1722,7 @@
       <div class="meta"><b>Contact:</b> +91 88259 07009 (DM with GitHub)</div>
     </div>
 
-    <div class="job-card" data-type="equity">
+    <div class="job-card" data-filter="equity">
       <span class="job-type equity">Equity</span>
       <h3>React + Three.js / 3D Web Developer</h3>
       <div class="company">3D Medical Education Platform</div>
@@ -1637,7 +1731,7 @@
     </div>
 
     <!-- Volunteer -->
-    <div class="job-card" data-type="volunteer">
+    <div class="job-card" data-filter="volunteer">
       <span class="job-type volunteer">Volunteer</span>
       <h3>Designer + Content Team Member</h3>
       <div class="company">GDG Lucknow (Google Developer Groups)</div>
@@ -1658,7 +1752,7 @@
   <div class="section-header">
     <span class="section-label">05</span>
     <h2 class="section-title">Events, Hackathons & Programs</h2>
-    <span class="section-count">10 events</span>
+    <span class="section-count" id="events-count">9 events</span>
   </div>
 
   <div class="featured-strip reveal">
@@ -1667,11 +1761,22 @@
     <a href="https://vibecoding.nxtgensec.org" target="_blank">Register Now →</a>
   </div>
 
-  <!-- Hackathons -->
-  <div class="cat-header" style="margin-top:8px">Hackathons &amp; Competitions</div>
-  <div class="card-grid wide reveal" style="margin-bottom:32px">
+  <div class="filter-bar" id="events-filters">
+    <span class="filter-bar-label">Filter</span>
+    <button class="fbtn active" onclick="filterSection('all',this,'events-filters','events-grid')">All</button>
+    <button class="fbtn" onclick="filterSection('hackathon',this,'events-filters','events-grid')">Hackathons</button>
+    <button class="fbtn" onclick="filterSection('workshop',this,'events-filters','events-grid')">Workshops</button>
+    <button class="fbtn" onclick="filterSection('program',this,'events-filters','events-grid')">Programs</button>
+    <button class="fbtn" onclick="filterSection('academic',this,'events-filters','events-grid')">Academic</button>
+    <button class="fbtn" onclick="filterSection('free',this,'events-filters','events-grid')">Free</button>
+    <button class="fbtn" onclick="filterSection('online',this,'events-filters','events-grid')">Online</button>
+    <button class="fbtn" onclick="filterSection('in-person',this,'events-filters','events-grid')">In-Person</button>
+    <span class="filter-count"><span class="fc-num" id="events-fc">9</span>shown</span>
+  </div>
 
-    <div class="event-card">
+  <div class="card-grid wide" id="events-grid">
+
+    <div class="event-card" data-filter="hackathon online">
       <div class="event-date">
         <span class="day">24</span>
         <span class="month">Apr</span>
@@ -1688,7 +1793,7 @@
       </div>
     </div>
 
-    <div class="event-card">
+    <div class="event-card" data-filter="hackathon in-person">
       <div class="event-date">
         <span class="day">25</span>
         <span class="month">Apr</span>
@@ -1705,7 +1810,7 @@
       </div>
     </div>
 
-    <div class="event-card">
+    <div class="event-card" data-filter="hackathon online">
       <div class="event-date">
         <span class="day">28</span>
         <span class="month">Apr</span>
@@ -1722,7 +1827,7 @@
       </div>
     </div>
 
-    <div class="event-card">
+    <div class="event-card" data-filter="hackathon in-person free">
       <div class="event-date">
         <span class="day">07</span>
         <span class="month">May</span>
@@ -1739,7 +1844,7 @@
       </div>
     </div>
 
-    <div class="event-card">
+    <div class="event-card" data-filter="hackathon online">
       <div class="event-date">
         <span class="day">08</span>
         <span class="month">May</span>
@@ -1755,13 +1860,8 @@
       </div>
     </div>
 
-  </div>
 
-  <!-- Academic -->
-  <div class="cat-header">Academic Conferences</div>
-  <div class="card-grid wide reveal" style="margin-bottom:32px">
-
-    <div class="event-card">
+    <div class="event-card" data-filter="academic in-person">
       <div class="event-date">
         <span class="day">20</span>
         <span class="month">Nov</span>
@@ -1778,13 +1878,8 @@
       </div>
     </div>
 
-  </div>
 
-  <!-- Workshops -->
-  <div class="cat-header">Workshops &amp; Recurring Programs</div>
-  <div class="card-grid triple reveal">
-
-    <div class="card">
+    <div class="card" data-filter="workshop online free">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">Free</span>
@@ -1795,7 +1890,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="workshop online free">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">Free</span>
@@ -1806,7 +1901,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="program online">
       <div class="card-accent yellow"></div>
       <div class="card-body">
         <span class="card-tag yellow">Cohort</span>
@@ -1817,6 +1912,7 @@
       </div>
     </div>
 
+    <div class="empty-state" id="events-empty">No events match this filter.</div>
   </div>
 </section>
 
@@ -1827,12 +1923,24 @@
   <div class="section-header">
     <span class="section-label">06</span>
     <h2 class="section-title">Learning Resources</h2>
-    <span class="section-count">14 resources</span>
+    <span class="section-count" id="learn-count">10 resources</span>
   </div>
 
-  <div class="card-grid triple reveal" style="margin-bottom:32px">
+  <div class="filter-bar" id="learn-filters">
+    <span class="filter-bar-label">Filter</span>
+    <button class="fbtn active" onclick="filterSection('all',this,'learn-filters','learn-grid')">All</button>
+    <button class="fbtn" onclick="filterSection('research',this,'learn-filters','learn-grid')">Research</button>
+    <button class="fbtn" onclick="filterSection('docs',this,'learn-filters','learn-grid')">Docs</button>
+    <button class="fbtn" onclick="filterSection('protocol',this,'learn-filters','learn-grid')">Protocols</button>
+    <button class="fbtn" onclick="filterSection('tool',this,'learn-filters','learn-grid')">Tools</button>
+    <button class="fbtn" onclick="filterSection('benchmark',this,'learn-filters','learn-grid')">Benchmarks</button>
+    <button class="fbtn" onclick="filterSection('courses',this,'learn-filters','learn-grid')">Courses</button>
+    <span class="filter-count"><span class="fc-num" id="learn-fc">10</span>shown</span>
+  </div>
 
-    <div class="card">
+  <div class="card-grid triple" id="learn-grid">
+
+    <div class="card" data-filter="research">
       <div class="card-accent yellow"></div>
       <div class="card-body">
         <span class="card-tag yellow">Free Report</span>
@@ -1843,7 +1951,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="research">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">Research</span>
@@ -1854,7 +1962,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="docs">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">Docs</span>
@@ -1865,7 +1973,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="protocol">
       <div class="card-accent orange"></div>
       <div class="card-body">
         <span class="card-tag orange">Protocol</span>
@@ -1876,7 +1984,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="research">
       <div class="card-accent pink"></div>
       <div class="card-body">
         <span class="card-tag pink">ICLR 2026</span>
@@ -1887,7 +1995,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="benchmark tool">
       <div class="card-accent"></div>
       <div class="card-body">
         <span class="card-tag">Benchmark</span>
@@ -1898,7 +2006,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="tool">
       <div class="card-accent blue"></div>
       <div class="card-body">
         <span class="card-tag blue">Interactive</span>
@@ -1909,7 +2017,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="tool">
       <div class="card-accent yellow"></div>
       <div class="card-body">
         <span class="card-tag yellow">Claude Skills</span>
@@ -1920,7 +2028,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-filter="docs">
       <div class="card-accent green"></div>
       <div class="card-body">
         <span class="card-tag green">PR Review</span>
@@ -1931,12 +2039,8 @@
       </div>
     </div>
 
-  </div>
 
-  <!-- Free Coding Platforms -->
-  <div class="cat-header">Free Coding Learning Platforms</div>
-  <div class="card-grid triple reveal">
-    <div class="card">
+    <div class="card" data-filter="courses">
       <div class="card-accent yellow"></div>
       <div class="card-body">
         <div class="card-title">Free Coding Curriculum</div>
@@ -1953,6 +2057,8 @@
         </ul>
       </div>
     </div>
+
+    <div class="empty-state" id="learn-empty">No resources match this filter.</div>
   </div>
 </section>
 
@@ -2107,14 +2213,43 @@
   }, { threshold: 0.08 });
   revealEls.forEach(el => observer.observe(el));
 
-  // ── JOB FILTER ──
-  function filterJobs(type, btn) {
-    document.querySelectorAll('#job-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  // ── UNIFIED FILTER ──
+  function filterSection(type, btn, filterId, gridId) {
+    // update active button
+    document.querySelectorAll('#' + filterId + ' .fbtn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.querySelectorAll('#jobs-grid .job-card').forEach(card => {
-      card.style.display = (type === 'all' || card.dataset.type === type) ? '' : 'none';
+
+    const grid = document.getElementById(gridId);
+    const items = grid.querySelectorAll('[data-filter]');
+    let shown = 0;
+
+    items.forEach(card => {
+      const tags = card.dataset.filter.split(' ');
+      const match = type === 'all' || tags.includes(type);
+      if (match) {
+        card.style.display = '';
+        card.classList.remove('card-show');
+        void card.offsetWidth; // force reflow for re-animation
+        card.classList.add('card-show');
+        shown++;
+      } else {
+        card.style.display = 'none';
+        card.classList.remove('card-show');
+      }
     });
+
+    // update count badge
+    const fcEl = document.getElementById(gridId.replace('-grid', '-fc').replace('jobs', 'jobs'));
+    if (fcEl) fcEl.textContent = shown;
+
+    // show empty state if needed
+    const emptyId = gridId.replace('-grid', '-empty');
+    const emptyEl = document.getElementById(emptyId);
+    if (emptyEl) emptyEl.style.display = shown === 0 ? 'block' : 'none';
   }
+
+  // fix count id mapping
+  const countMap = { 'tools-grid':'tools-fc', 'startups-grid':'startups-fc', 'jobs-grid':'jobs-fc', 'events-grid':'events-fc', 'learn-grid':'learn-fc' };
 
   // ── ACTIVE NAV ON SCROLL ──
   const sections = document.querySelectorAll('section[id]');
