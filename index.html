@@ -860,6 +860,118 @@
     .job-card.card-show,
     .event-card.card-show { animation: cardIn 0.18s ease forwards; }
 
+    /* ─── LIVE FEED ─── */
+    .live-dot {
+      display: inline-block;
+      width: 9px; height: 9px;
+      background: var(--green);
+      border: 2px solid var(--black);
+      border-radius: 50%;
+      animation: livePulse 1.6s ease-in-out infinite;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(0,255,136,0.5); }
+      50%       { opacity: 0.6; transform: scale(0.75); box-shadow: 0 0 0 4px rgba(0,255,136,0); }
+    }
+    .feed-meta-row {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    #feed-status {
+      font-family: var(--font-head);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+    }
+    .refresh-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--white);
+      color: var(--black);
+      border: var(--border);
+      padding: 6px 14px;
+      font-family: var(--font-body);
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--black);
+      transition: all 0.1s;
+    }
+    .refresh-btn:hover { background: var(--yellow); transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--black); }
+    .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+    .refresh-btn:disabled { opacity: 0.5; pointer-events: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* news card */
+    .news-card {
+      display: flex; flex-direction: column;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      background: var(--white);
+      text-decoration: none; color: var(--black);
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative; overflow: hidden;
+      min-height: 130px;
+    }
+    .news-card:hover { transform: translate(-3px,-3px); box-shadow: var(--shadow-lg); }
+    .news-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 5px; background: var(--yellow);
+    }
+    .news-card.src-hn::before  { background: var(--orange); }
+    .news-card.src-dev::before { background: var(--purple); }
+    .nc-top {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 14px 0 20px;
+    }
+    .nc-src {
+      font-family: var(--font-head); font-size: 9px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: 1px;
+      padding: 2px 7px; border: 2px solid var(--black); flex-shrink: 0;
+    }
+    .src-hn  .nc-src { background: var(--orange); color: var(--white); }
+    .src-dev .nc-src { background: var(--purple); color: var(--white); }
+    .nc-time { font-family: var(--font-head); font-size: 10px; color: #888; font-weight: 900; }
+    .nc-pts  {
+      margin-left: auto; font-family: var(--font-head); font-size: 10px; font-weight: 900;
+      background: var(--yellow); color: var(--black); padding: 1px 6px; border: 1px solid var(--black);
+    }
+    .nc-title {
+      font-family: var(--font-head); font-size: 13px; font-weight: 900;
+      line-height: 1.4; padding: 10px 14px 10px 20px; flex: 1;
+    }
+    .nc-foot {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      padding: 8px 14px 12px 20px;
+      border-top: 2px solid #eae6de; margin-top: auto;
+    }
+    .nc-pill {
+      font-size: 9px; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.5px; padding: 2px 7px; border: 1px solid #ccc;
+      color: #666; background: #f5f0e8;
+    }
+    .nc-cmts { margin-left: auto; font-family: var(--font-head); font-size: 9px; color: #bbb; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* skeleton */
+    .news-skel {
+      border: var(--border); background: var(--white);
+      padding: 16px 16px 16px 22px; position: relative; overflow: hidden; min-height: 130px;
+    }
+    .news-skel::before { content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:#e8e4dc; }
+    .skel-bar { background: #e8e4dc; border-radius: 1px; animation: skelPulse 1.4s ease-in-out infinite; }
+    @keyframes skelPulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
     /* ─── EMPTY STATE ─── */
     .empty-state {
       grid-column: 1 / -1;
@@ -896,6 +1008,7 @@
 <nav>
   <a href="#" class="nav-logo">// REPUTATION.INTEL</a>
   <div class="nav-links">
+    <a href="#live-feed" style="color:var(--green);display:inline-flex;align-items:center;gap:5px"><span class="live-dot" style="border-color:var(--green)"></span>Live</a>
     <a href="#models" class="active">AI Models</a>
     <a href="#tools">Tools</a>
     <a href="#startups">Startups</a>
@@ -926,6 +1039,40 @@
     <div class="hero-tag green">Learning Resources</div>
     <div class="hero-tag orange">Security Alerts</div>
     <div class="hero-tag" style="background:#8b00ff;color:#fff;">Promo Codes</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION: LIVE FEED                          -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="section" id="live-feed" style="background:#0a0a0a;border-bottom:3px solid #00ff88;">
+  <div class="section-header" style="border-bottom:2px solid #1a1a1a;padding-bottom:20px;margin-bottom:20px;">
+    <span class="section-label" style="background:var(--green);color:var(--black);display:inline-flex;align-items:center;gap:6px;">
+      <span class="live-dot" style="border-color:#0a0a0a;width:8px;height:8px;"></span>Live
+    </span>
+    <h2 class="section-title" style="color:var(--white);">Tech &amp; Hackathon Feed</h2>
+    <span class="section-count" id="feed-count" style="color:#444;">Fetching...</span>
+    <div class="feed-meta-row">
+      <span id="feed-status">Connecting...</span>
+      <button class="refresh-btn" id="refresh-btn" onclick="refreshFeed(this)" style="background:#1a1a1a;color:#aaa;border-color:#333;box-shadow:3px 3px 0 #333;">
+        <svg id="refresh-icon" width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M9.5 2A5 5 0 1 0 10 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/><polyline points="10,1 10,4 7,4" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/></svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="feed-filters" style="border-color:#1e1e1e;box-shadow:5px 5px 0 #1e1e1e;background:#111;">
+    <span class="filter-bar-label" style="background:#0a0a0a;border-right-color:#1e1e1e;color:#444;">Filter</span>
+    <button class="fbtn active" onclick="filterSection('all',this,'feed-filters','feed-grid')">All</button>
+    <button class="fbtn" onclick="filterSection('ai',this,'feed-filters','feed-grid')">AI &amp; LLM</button>
+    <button class="fbtn" onclick="filterSection('hackathon',this,'feed-filters','feed-grid')">Hackathons</button>
+    <button class="fbtn" onclick="filterSection('research',this,'feed-filters','feed-grid')">Research</button>
+    <button class="fbtn" onclick="filterSection('open-source',this,'feed-filters','feed-grid')">Open Source</button>
+    <span class="filter-count" style="background:#0a0a0a;border-left-color:#1e1e1e;"><span class="fc-num" id="feed-fc">—</span>shown</span>
+  </div>
+
+  <div class="card-grid triple" id="feed-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));">
+    <!-- populated by JS -->
   </div>
 </section>
 
@@ -2201,35 +2348,25 @@
 <a href="#" class="btt" title="Back to top">↑</a>
 
 <script>
-  // ── REVEAL ON SCROLL ──
-  const revealEls = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.08 });
-  revealEls.forEach(el => observer.observe(el));
+  /* ── REVEAL ON SCROLL ── */
+  document.querySelectorAll('.reveal').forEach(el => {
+    new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.08 }).observe(el);
+  });
 
-  // ── UNIFIED FILTER ──
+  /* ── UNIFIED FILTER ── */
   function filterSection(type, btn, filterId, gridId) {
-    // update active button
     document.querySelectorAll('#' + filterId + ' .fbtn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
     const grid = document.getElementById(gridId);
-    const items = grid.querySelectorAll('[data-filter]');
     let shown = 0;
-
-    items.forEach(card => {
-      const tags = card.dataset.filter.split(' ');
-      const match = type === 'all' || tags.includes(type);
+    grid.querySelectorAll('[data-filter]').forEach(card => {
+      const match = type === 'all' || card.dataset.filter.split(' ').includes(type);
       if (match) {
         card.style.display = '';
         card.classList.remove('card-show');
-        void card.offsetWidth; // force reflow for re-animation
+        void card.offsetWidth;
         card.classList.add('card-show');
         shown++;
       } else {
@@ -2237,33 +2374,237 @@
         card.classList.remove('card-show');
       }
     });
-
-    // update count badge
-    const fcEl = document.getElementById(gridId.replace('-grid', '-fc').replace('jobs', 'jobs'));
+    const fcEl = document.getElementById(gridId.replace('-grid','-fc'));
     if (fcEl) fcEl.textContent = shown;
-
-    // show empty state if needed
-    const emptyId = gridId.replace('-grid', '-empty');
-    const emptyEl = document.getElementById(emptyId);
+    const emptyEl = document.getElementById(gridId.replace('-grid','-empty'));
     if (emptyEl) emptyEl.style.display = shown === 0 ? 'block' : 'none';
   }
 
-  // fix count id mapping
-  const countMap = { 'tools-grid':'tools-fc', 'startups-grid':'startups-fc', 'jobs-grid':'jobs-fc', 'events-grid':'events-fc', 'learn-grid':'learn-fc' };
+  /* ── ACTIVE NAV ON SCROLL ── */
+  const _navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    document.querySelectorAll('section[id]').forEach(s => {
+      if (window.scrollY >= s.offsetTop - 130) cur = s.id;
+    });
+    _navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+  }, { passive: true });
 
-  // ── ACTIVE NAV ON SCROLL ──
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-  const onScroll = () => {
-    let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  /* ═══════════════════════════════════════════
+     LIVE FEED ENGINE
+  ═══════════════════════════════════════════ */
+  (() => {
+    const CACHE_KEY = 'rep_feed_v3';
+    const TTL = 15 * 60 * 1000;
+
+    /* helpers */
+    const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    function timeAgo(d) {
+      const sec = (Date.now() - new Date(d)) / 1000;
+      if (sec < 60)   return Math.round(sec) + 's ago';
+      if (sec < 3600) return Math.round(sec/60) + 'm ago';
+      if (sec < 86400)return Math.round(sec/3600) + 'h ago';
+      return Math.round(sec/86400) + 'd ago';
+    }
+
+    function categorize(text) {
+      const t = (text || '').toLowerCase();
+      const cats = new Set(['all']);
+      if (/hackathon|contest|competition|challenge|prize|submission|devpost|mlh/i.test(t))         cats.add('hackathon');
+      if (/\b(ai|llm|gpt|claude|gemini|anthropic|openai|llama|mistral|transformer|neural|diffusion|agent|rag|fine.tun|chatbot|language model)\b/i.test(t)) cats.add('ai');
+      if (/\b(paper|research|study|arxiv|benchmark|dataset|experiment|finding|evaluation|survey)\b/i.test(t)) cats.add('research');
+      if (/\b(open.source|github|open source|npm|library|framework|repo|release|mit license|apache)\b/i.test(t)) cats.add('open-source');
+      if (cats.size === 1) cats.add('ai');
+      return [...cats];
+    }
+
+    /* fetchers */
+    async function hn(query, n) {
+      const r = await fetch(`https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(query)}&tags=story&hitsPerPage=${n}&numericFilters=num_comments>0`);
+      const d = await r.json();
+      return (d.hits || []).filter(h => h.title).map(h => ({
+        id: 'hn_' + h.objectID,
+        title: h.title,
+        url: h.url || 'https://news.ycombinator.com/item?id=' + h.objectID,
+        src: 'HN', score: h.points || 0, comments: h.num_comments || 0,
+        time: h.created_at, cats: categorize(h.title)
+      }));
+    }
+
+    async function devto(tag, n) {
+      const r = await fetch(`https://dev.to/api/articles?tag=${tag}&per_page=${n}&state=fresh`);
+      const d = await r.json();
+      return (Array.isArray(d) ? d : []).map(a => ({
+        id: 'dev_' + a.id,
+        title: a.title, url: a.url, src: 'DEV',
+        score: a.positive_reactions_count || 0, comments: a.comments_count || 0,
+        time: a.published_at,
+        cats: categorize(a.title + ' ' + (a.tag_list || []).join(' '))
+      }));
+    }
+
+    /* render */
+    function card(item) {
+      const tags = item.cats.filter(c => c !== 'all').slice(0, 2);
+      return `<a class="news-card src-${item.src.toLowerCase()} card-show" href="${esc(item.url)}" target="_blank" rel="noopener" data-filter="${item.cats.join(' ')}">
+        <div class="nc-top">
+          <span class="nc-src">${item.src}</span>
+          <span class="nc-time">${timeAgo(item.time)}</span>
+          ${item.score > 0 ? `<span class="nc-pts">${item.score} pts</span>` : ''}
+        </div>
+        <div class="nc-title">${esc(item.title)}</div>
+        <div class="nc-foot">
+          ${tags.map(t => `<span class="nc-pill">${t}</span>`).join('')}
+          ${item.comments > 0 ? `<span class="nc-cmts">${item.comments} cmt${item.comments>1?'s':''}</span>` : ''}
+        </div>
+      </a>`;
+    }
+
+    function skeleton() {
+      return Array(9).fill(0).map((_, i) => `<div class="news-skel">
+        <div class="skel-bar" style="width:38px;height:16px;margin-bottom:10px"></div>
+        <div class="skel-bar" style="width:${75+((i*17)%20)}%;height:13px;margin-bottom:6px"></div>
+        <div class="skel-bar" style="width:${50+((i*13)%25)}%;height:13px;margin-bottom:14px"></div>
+        <div class="skel-bar" style="width:48px;height:11px"></div>
+      </div>`).join('');
+    }
+
+    function applyRender(items) {
+      const grid = document.getElementById('feed-grid');
+      const fc   = document.getElementById('feed-fc');
+      const cnt  = document.getElementById('feed-count');
+      if (!items.length) {
+        grid.innerHTML = '<div class="empty-state" style="display:block;color:#555;border-color:#333;">No stories loaded — check connection and refresh.</div>';
+        return;
+      }
+      grid.innerHTML = items.map(card).join('') +
+        '<div class="empty-state" id="feed-empty" style="color:#555;border-color:#333;">No stories match this filter.</div>';
+      if (fc)  fc.textContent  = items.length;
+      if (cnt) cnt.textContent = items.length + ' stories';
+    }
+
+    /* main loader */
+    async function load(force) {
+      const status = document.getElementById('feed-status');
+      const grid   = document.getElementById('feed-grid');
+
+      if (!force) {
+        try {
+          const hit = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+          if (hit && Date.now() - hit.ts < TTL) {
+            applyRender(hit.data);
+            const age = Math.round((Date.now() - hit.ts) / 60000);
+            if (status) status.textContent = age < 1 ? 'Updated just now' : `Updated ${age}m ago`;
+            return;
+          }
+        } catch(_) {}
+      }
+
+      if (grid)   grid.innerHTML = skeleton();
+      if (status) status.textContent = 'Fetching live data...';
+
+      try {
+        const settled = await Promise.allSettled([
+          hn('AI LLM machine learning GPT Claude Anthropic', 10),
+          hn('hackathon developer competition tech prize', 7),
+          hn('open source release developer tools library', 6),
+          devto('ai', 7),
+          devto('machinelearning', 5),
+          devto('hackathon', 4),
+          devto('opensource', 4)
+        ]);
+
+        const all = settled.flatMap(r => r.status === 'fulfilled' ? r.value : []);
+
+        /* deduplicate by title prefix */
+        const seen = new Set();
+        const unique = all.filter(item => {
+          const key = item.title.toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,40);
+          if (seen.has(key)) return false;
+          seen.add(key); return true;
+        });
+
+        /* sort by recency */
+        unique.sort((a, b) => new Date(b.time) - new Date(a.time));
+        const final = unique.slice(0, 36);
+
+        try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: final, ts: Date.now() })); } catch(_) {}
+        applyRender(final);
+        if (status) status.textContent = 'Updated just now';
+      } catch(e) {
+        if (grid) grid.innerHTML = `<div class="empty-state" style="display:block;color:#555;border-color:#333;">Feed unavailable — check your connection.</div>`;
+        if (status) status.textContent = 'Could not load';
+      }
+    }
+
+    /* refresh button handler */
+    window.refreshFeed = function(btn) {
+      btn.disabled = true;
+      btn.classList.add('spinning');
+      load(true).then(() => {
+        lastFetch = Date.now();
+        startTimer(); // reset the auto-update clock
+      }).finally(() => {
+        btn.disabled = false;
+        btn.classList.remove('spinning');
+      });
+    };
+
+    /* ── AUTO-UPDATE ── */
+    const INTERVAL = 15 * 60 * 1000; // 15 min
+    let timer = null;
+    let lastFetch = 0;
+
+    function startTimer() {
+      stopTimer();
+      timer = setInterval(() => {
+        if (Date.now() - lastFetch >= INTERVAL) silentRefresh();
+      }, 60 * 1000); // check every minute
+    }
+
+    function stopTimer() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    async function silentRefresh() {
+      lastFetch = Date.now();
+      const status = document.getElementById('feed-status');
+      if (status) status.textContent = 'Refreshing...';
+      await load(true);
+    }
+
+    /* pause when tab hidden, resume + re-check when visible */
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopTimer();
+      } else {
+        // if stale by more than interval, refresh immediately
+        if (Date.now() - lastFetch >= INTERVAL) silentRefresh();
+        startTimer();
+      }
     });
-    navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* tick the "Updated Xm ago" label every 60s without refetching */
+    setInterval(() => {
+      const status = document.getElementById('feed-status');
+      if (!status || status.textContent.startsWith('Fetch') || status.textContent.startsWith('Refresh') || status.textContent === 'Connecting...') return;
+      const age = Math.round((Date.now() - lastFetch) / 60000);
+      status.textContent = age < 1 ? 'Updated just now' : `Updated ${age}m ago`;
+    }, 60 * 1000);
+
+    /* boot */
+    const _boot = async () => {
+      await load(false);
+      lastFetch = Date.now();
+      startTimer();
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', _boot);
+    } else {
+      _boot();
+    }
+  })();
 </script>
 </body>
 </html>
